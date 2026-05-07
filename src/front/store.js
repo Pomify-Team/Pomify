@@ -1,8 +1,7 @@
 const TIMER_PRESETS = [
-    { id: 0, label: "1/1 - test",       focus: 1 * 60,  break: 1 * 60,  cycles: 6 },
-    { id: 1, label: "20/5 - 1 hour",   focus: 20 * 60, break: 5 * 60,  cycles: 3 },
-    { id: 2, label: "30/10 - 2 hours", focus: 30 * 60, break: 10 * 60, cycles: 4 },
-    { id: 3, label: "60/15 - 3 hours", focus: 60 * 60, break: 15 * 60, cycles: 3 },
+    { id: 0, label: "20/5 - 1 hour",   focus: 20 * 60, break: 5 * 60,  cycles: 3 },
+    { id: 1, label: "30/10 - 2 hours", focus: 30 * 60, break: 10 * 60, cycles: 4 },
+    { id: 2, label: "60/15 - 3 hours", focus: 60 * 60, break: 15 * 60, cycles: 3 },
 ];
 
 const calcFocusTotal = (preset) => preset.focus * preset.cycles;
@@ -24,7 +23,7 @@ export const initialStore = () => {
     return {
         message: null,
         currentUser: null,
-        pomodoro: buildPomodoroState(TIMER_PRESETS[1]),
+        pomodoro: buildPomodoroState(TIMER_PRESETS[0]),
         currentPlaylist: null,
         currentTrackIndex: 0,
         isPlaying: false,

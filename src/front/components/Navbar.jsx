@@ -5,12 +5,15 @@ import { LoginModal } from "./LoginModal";
 import { RegisterModal } from "./RegisterModal";
 import { getGoals, updateGoal, deleteGoal, createGoal } from "./goals/GoalsService";
 import pomifyLogo from "../assets/img/pomify_logo.png";
+import useLanguage from "../context/LanguageContext";
 
 const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 export const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t, language, changeLanguage } = useLanguage();
+  const [isLangOpen, setIsLangOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -33,6 +36,9 @@ export const Navbar = () => {
     const handleClickOutside = (e) => {
       if (!e.target.closest(".user-dropdown-container")) {
         setIsDropdownOpen(false);
+      }
+      if (!e.target.closest(".lang-dropdown-container")) {
+        setIsLangOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -77,7 +83,6 @@ export const Navbar = () => {
   const handleDelete = async (id) => {
     await deleteGoal(id);
     setGoals(goals.filter(g => g.id !== id));
-    if (selectedGoal === id) setSelectedGoal(null);
   };
 
   const handleCreateGoal = async () => {
@@ -127,27 +132,47 @@ export const Navbar = () => {
       <nav className="navbar-container">
         <div className="navbar-content">
 
-          
           <div className="navbar-left" onClick={() => navigate("/about")} style={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
             <img src={pomifyLogo} alt="Pomify" style={{ height: "32px", width: "auto" }} />
           </div>
 
-          
           {isLoggedIn && (
             <button className="btn-goals-center" onClick={openGoalsModal}>
-              Your Goals
+              {t("goals.yourGoals")}
             </button>
           )}
 
-          
           <div className="navbar-right">
+            <div className="lang-dropdown-container">
+              <button className="lang-btn" onClick={() => setIsLangOpen(!isLangOpen)}>
+                <span className="lang-label">{language === "en" ? "English" : "Español"}</span>
+                <span className="lang-arrow">▾</span>
+              </button>
+              {isLangOpen && (
+                <div className="lang-menu">
+                  <button
+                    className={`lang-option${language === "en" ? " active" : ""}`}
+                    onClick={() => { changeLanguage("en"); setIsLangOpen(false); }}
+                  >
+                    English
+                  </button>
+                  <button
+                    className={`lang-option${language === "es" ? " active" : ""}`}
+                    onClick={() => { changeLanguage("es"); setIsLangOpen(false); }}
+                  >
+                    Español
+                  </button>
+                </div>
+              )}
+            </div>
+
             {isLoggedIn ? (
               <div className="user-dropdown-container">
                 <button
                   className="user-pill"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  <span className="user-name">{user?.name || "Usuario"}</span>
+                  <span className="user-name">{user?.name || t("navbar.user")}</span>
                   <div className="user-avatar">
                     {renderAvatar()}
                   </div>
@@ -156,32 +181,31 @@ export const Navbar = () => {
                 {isDropdownOpen && (
                   <div className="dropdown-menu">
                     <Link to="/profile" onClick={() => setIsDropdownOpen(false)}>
-                      Edit profile
+                      {t("navbar.editProfile")}
                     </Link>
                     <Link to="/folders" onClick={() => setIsDropdownOpen(false)}>
-                      My folders
+                      {t("navbar.myFolders")}
                     </Link>
-                    <button onClick={handleLogout}>Logout</button>
+                    <button onClick={handleLogout}>{t("navbar.logout")}</button>
                   </div>
                 )}
               </div>
             ) : (
               <div className="auth-buttons">
-                <button className="btn-outline" onClick={() => setShowRegister(true)}>Register</button>
-                <button className="btn-primary" onClick={() => setShowLogin(true)}>Login</button>
+                <button className="btn-outline" onClick={() => setShowRegister(true)}>{t("navbar.register")}</button>
+                <button className="btn-primary" onClick={() => setShowLogin(true)}>{t("navbar.login")}</button>
               </div>
             )}
           </div>
         </div>
       </nav>
 
-      
       {showGoalsModal && (
         <div className="gmodal-overlay" onClick={() => setShowGoalsModal(false)}>
           <div className="gmodal-box" onClick={e => e.stopPropagation()}>
 
             <div className="gmodal-header">
-              <h2>Your Goals</h2>
+              <h2>{t("goals.yourGoals")}</h2>
               <button className="gmodal-close" onClick={() => setShowGoalsModal(false)}>✕</button>
             </div>
 
@@ -189,20 +213,20 @@ export const Navbar = () => {
               {goals.length === 0 && (
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1rem", gap: "0.75rem" }}>
                   <p style={{ color: "var(--color-text-secondary)", textAlign: "center", margin: 0 }}>
-                    No goals yet. Create one!
+                    {t("goals.noGoals")}
                   </p>
                   <div style={{ display: "flex", gap: "0.5rem", width: "100%" }}>
                     <input
                       className="gmodal-edit-input"
                       style={{ flex: 1 }}
-                      placeholder="Write your new goal..."
+                      placeholder={t("goals.writeNewGoal")}
                       value={newGoalText}
                       onChange={e => setNewGoalText(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && handleCreateGoal()}
                       autoFocus
                     />
                     <button className="btn-primary" onClick={handleCreateGoal} style={{ whiteSpace: "nowrap" }}>
-                      + Create
+                      {t("goals.create")}
                     </button>
                   </div>
                 </div>
@@ -252,7 +276,7 @@ export const Navbar = () => {
                           lineHeight: "1.5"
                         }}
                       >
-                        {s === "urgent" ? "Urgent" : s === "progress" ? "In Progress" : "Done"}
+                        {s === "urgent" ? t("goals.urgent") : s === "progress" ? t("goals.inProgress") : t("goals.done")}
                       </button>
                     ))}
                   </div>
@@ -262,7 +286,7 @@ export const Navbar = () => {
 
             <div className="gmodal-footer">
               <button className="btn-primary" onClick={goals.length === 0 ? handleCreateGoalAndGo : () => { setShowGoalsModal(false); navigate("/goals"); }}>
-                {goals.length === 0 ? "Go to Goals" : "View All"}
+                {goals.length === 0 ? t("goals.goToGoals") : t("goals.viewAll")}
               </button>
             </div>
 

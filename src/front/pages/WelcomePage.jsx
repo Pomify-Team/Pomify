@@ -7,18 +7,20 @@ import { LoginModal } from "../components/LoginModal";
 import Folder from "../components/Folder";
 import TiltedCard from "../components/TiltedCard";
 import pomifyLogo from "../assets/img/pomify_logo.png";
-
-const POMODORO_MODES = [
-  { label: "20/5", title: "Light Focus", desc: "20 min focus · 5 min break · 3 cycles", bg: "#E2E8DF" },
-  { label: "30/10", title: "Deep Work", desc: "30 min focus · 10 min break · 4 cycles", bg: "#D8E0D4" },
-  { label: "60/15", title: "Ultra Focus", desc: "60 min focus · 15 min break · 3 cycles", bg: "#CED8C9" },
-];
+import useLanguage from "../context/LanguageContext";
 
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
 export const WelcomePage = () => {
+  const { t } = useLanguage();
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+
+  const pomodoroModes = [
+    { label: "20/5", title: t("welcome.lightFocusTitle"), desc: t("welcome.lightFocusDesc"), bg: "#E2E8DF" },
+    { label: "30/10", title: t("welcome.deepWorkTitle"), desc: t("welcome.deepWorkDesc"), bg: "#D8E0D4" },
+    { label: "60/15", title: t("welcome.ultraFocusTitle"), desc: t("welcome.ultraFocusDesc"), bg: "#CED8C9" },
+  ];
 
   return (
     <>
@@ -36,12 +38,12 @@ export const WelcomePage = () => {
               </h1>
               <div className="welcome-hero-right">
                 <p className="welcome-text">
-                  <strong>Pomify</strong> combines a Pomodoro timer, task planning, and focus music to keep you in the flow —
-                  <strong> one focused block at a time.</strong>
+                  <strong>Pomify</strong> {t("welcome.description")}
+                  <strong> {t("welcome.tagline")}</strong>
                 </p>
                 <div className="welcome-buttons">
-                  <button className="btn-signup" onClick={() => setShowRegister(true)}>Sign up</button>
-                  <button className="btn-login" onClick={() => setShowLogin(true)}>Login</button>
+                  <button className="btn-signup" onClick={() => setShowRegister(true)}>{t("welcome.signUp")}</button>
+                  <button className="btn-login" onClick={() => setShowLogin(true)}>{t("welcome.login")}</button>
                 </div>
               </div>
             </div>
@@ -53,11 +55,11 @@ export const WelcomePage = () => {
           <section className="wcard">
             <div className="wcard-split">
               <div className="wcard-text">
-                <h2 className="wcard-title">Choose a Pomodoro mode</h2>
-                <p className="wcard-desc">Pick the rhythm that best fits your work session.</p>
+                <h2 className="wcard-title">{t("welcome.pomodoroTitle")}</h2>
+                <p className="wcard-desc">{t("welcome.pomodoroDesc")}</p>
               </div>
               <div className="wcard-visual wcard-visual--stack">
-                {POMODORO_MODES.map((mode, i) => (
+                {pomodoroModes.map((mode, i) => (
                   <div key={mode.label} className="pmode-card" style={{ background: mode.bg, zIndex: i + 1 }}>
                     <span className="pmode-label">{mode.label}</span>
                     <h3 className="pmode-title">{mode.title}</h3>
@@ -71,8 +73,8 @@ export const WelcomePage = () => {
           <section className="wcard">
             <div className="wcard-split">
               <div className="wcard-text">
-                <h2 className="wcard-title">Take notes on your pages and save them in Folders.</h2>
-                <p className="wcard-desc">Access them anytime, anywhere.</p>
+                <h2 className="wcard-title">{t("welcome.notesTitle")}</h2>
+                <p className="wcard-desc">{t("welcome.notesDesc")}</p>
               </div>
               <div className="wcard-visual">
                 <div className="folder-outer">
@@ -109,8 +111,8 @@ export const WelcomePage = () => {
                 </div>
               </div>
               <div className="wcard-text">
-                <h2 className="wcard-title">Pick music that helps you stay focused.</h2>
-                <p className="wcard-desc">No distractions — always better.</p>
+                <h2 className="wcard-title">{t("welcome.musicTitle")}</h2>
+                <p className="wcard-desc">{t("welcome.musicDesc")}</p>
               </div>
             </div>
           </section>
@@ -118,11 +120,11 @@ export const WelcomePage = () => {
         </div>
 
         <section className="welcome-cta">
-          <button className="btn-cta" onClick={scrollToTop}>Ready to start?</button>
+          <button className="btn-cta" onClick={scrollToTop}>{t("welcome.cta")}</button>
         </section>
 
         <footer className="welcome-footer">
-          <span>© 2026 Pomify</span>
+          <span>{t("common.copyright")}</span>
           <span>Juan · Messen · Denn</span>
         </footer>
 

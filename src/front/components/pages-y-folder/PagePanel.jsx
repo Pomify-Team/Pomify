@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'motion/react';
 import './PagePanel.css';
+import useLanguage from '../../context/LanguageContext';
 
 const AnimatedItem = ({ children, delay = 0, index, onMouseEnter, onClick }) => {
   const ref = useRef(null);
@@ -35,6 +36,7 @@ const PagePanel = ({
   showGradients = true,
   displayScrollbar = true,
 }) => {
+  const { t } = useLanguage();
   const listRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [topGradientOpacity, setTopGradientOpacity] = useState(0);
@@ -89,29 +91,29 @@ const PagePanel = ({
   if (editingPage) return (
     <div className="page-create-form">
       <div className="page-create-header">
-        <span className="page-create-title">Edit page</span>
+        <span className="page-create-title">{t("pages.editPage")}</span>
         <button className="page-create-close" onClick={handleCancelEdit}>✕</button>
       </div>
       <div className="page-create-body">
-        <label className="page-create-label">Title</label>
+        <label className="page-create-label">{t("pages.titleLabel")}</label>
         <input
           className="page-create-input"
-          placeholder="Page title..."
+          placeholder={t("pages.pageTitlePlaceholder")}
           value={editTitle}
           onChange={e => setEditTitle(e.target.value)}
           autoFocus
         />
-        <label className="page-create-label">Contenido</label>
+        <label className="page-create-label">{t("pages.contentLabel")}</label>
         <textarea
           className="page-create-textarea"
-          placeholder="Write your notes here..."
+          placeholder={t("pages.writeNotesPlaceholder")}
           value={editContent}
           onChange={e => setEditContent(e.target.value)}
         />
       </div>
       <div className="page-create-footer">
-        <button className="page-create-btn-cancel" onClick={handleCancelEdit}>Cancel</button>
-        <button className="page-create-btn-submit" onClick={handleSubmitEdit}>Save changes</button>
+        <button className="page-create-btn-cancel" onClick={handleCancelEdit}>{t("common.cancel")}</button>
+        <button className="page-create-btn-submit" onClick={handleSubmitEdit}>{t("pages.saveChanges")}</button>
       </div>
     </div>
   );
@@ -119,29 +121,29 @@ const PagePanel = ({
   if (showCreateForm) return (
     <div className="page-create-form">
       <div className="page-create-header">
-        <span className="page-create-title">New page</span>
+        <span className="page-create-title">{t("pages.newPageTitle")}</span>
         <button className="page-create-close" onClick={handleCancelCreate}>✕</button>
       </div>
       <div className="page-create-body">
-        <label className="page-create-label">Title</label>
+        <label className="page-create-label">{t("pages.titleLabel")}</label>
         <input
           className="page-create-input"
-          placeholder="Page title..."
+          placeholder={t("pages.pageTitlePlaceholder")}
           value={newTitle}
           onChange={e => setNewTitle(e.target.value)}
           autoFocus
         />
-        <label className="page-create-label">Contenido</label>
+        <label className="page-create-label">{t("pages.contentLabel")}</label>
         <textarea
           className="page-create-textarea"
-          placeholder="Write your notes here..."
+          placeholder={t("pages.writeNotesPlaceholder")}
           value={newContent}
           onChange={e => setNewContent(e.target.value)}
         />
       </div>
       <div className="page-create-footer">
-        <button className="page-create-btn-cancel" onClick={handleCancelCreate}>Cancel</button>
-        <button className="page-create-btn-submit" onClick={handleSubmitCreate}>Create page</button>
+        <button className="page-create-btn-cancel" onClick={handleCancelCreate}>{t("common.cancel")}</button>
+        <button className="page-create-btn-submit" onClick={handleSubmitCreate}>{t("pages.createPage")}</button>
       </div>
     </div>
   );
@@ -153,7 +155,7 @@ const PagePanel = ({
           <path d="M10 25 C10 20 14 16 19 16 L38 16 C41 16 44 18 46 20 L50 25 L85 25 C90 25 94 29 94 34 L94 78 C94 83 90 87 85 87 L15 87 C10 87 6 83 6 78 L6 30 C6 27 8 25 10 25 Z"/>
         </svg>
       </div>
-      <div className="page-empty-text">Select a folder to see its pages</div>
+      <div className="page-empty-text">{t("pages.selectFolderMsg")}</div>
     </div>
   );
 
@@ -165,8 +167,8 @@ const PagePanel = ({
           <path d="M6 30 L20 30 L85 25 L94 34 L50 25 L46 20 C44 18 41 16 38 16 L19 16 C14 16 10 20 10 25 Z" fill="#2d6a8f"/>
         </svg>
       </div>
-      <div className="page-empty-text">No pages in this folder</div>
-      <button className="page-empty-btn" onClick={onCreatePage}>+ Create new page or note</button>
+      <div className="page-empty-text">{t("pages.noPagesInFolder")}</div>
+      <button className="page-empty-btn" onClick={onCreatePage}>{t("pages.createNewPage")}</button>
     </div>
   );
 

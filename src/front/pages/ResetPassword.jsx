@@ -2,8 +2,10 @@ import "../styles/resetPassword.css";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { resetPassword } from "../services/loginBS";
+import useLanguage from "../context/LanguageContext";
 
 export const ResetPassword = () => {
+    const { t } = useLanguage();
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
     const navigate = useNavigate();
@@ -15,11 +17,11 @@ export const ResetPassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!password) { setError("Please enter a new password."); return; }
-        if (password !== confirmPassword) { setError("Passwords do not match."); return; }
+        if (!password) { setError(t("auth.enterNewPassword")); return; }
+        if (password !== confirmPassword) { setError(t("auth.passwordsMismatch")); return; }
         try {
             await resetPassword(token, password);
-            setMessage("Password updated! Redirecting...");
+            setMessage(t("auth.passwordUpdated"));
             setTimeout(() => navigate("/"), 2000);
         } catch (err) {
             setError(err.message);
@@ -29,18 +31,18 @@ export const ResetPassword = () => {
     return (
         <div className="reset-page">
             <div className="reset-card">
-                <h2 className="modal-title">reset password</h2>
+                <h2 className="modal-title">{t("auth.resetPasswordTitle")}</h2>
                 <form className="modal-form" onSubmit={handleSubmit}>
                     <input
                         type="password"
-                        placeholder="new password"
+                        placeholder={t("auth.newPassword")}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="form-input"
                     />
                     <input
                         type="password"
-                        placeholder="confirm password"
+                        placeholder={t("auth.confirmPassword")}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         className="form-input"
@@ -48,7 +50,7 @@ export const ResetPassword = () => {
                     {error && <div className="form-error">{error}</div>}
                     {message && <div className="form-success">{message}</div>}
                     <button type="submit" className="modal-btn-submit">
-                        save new password
+                        {t("auth.saveNewPassword")}
                     </button>
                 </form>
             </div>

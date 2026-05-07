@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { getFolders, createFolder } from "./pages-y-folder/FolderServices";
 import { getPages, createPage } from "./pages-y-folder/PageServices";
 import "../styles/pagesZone.css";
+import useLanguage from "../context/LanguageContext";
 
 export const PagesZone = () => {
+    const { t } = useLanguage();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [folders, setFolders] = useState([]);
@@ -70,7 +72,7 @@ export const PagesZone = () => {
     const handleSave = async () => {
         if (!selectedFolder) return;
         if (!title.trim()) {
-            setError("Title cannot be empty.");
+            setError(t("pages.titleEmpty"));
             return;
         }
         const data = await createPage(parseInt(selectedFolder), title.trim(), content.trim());
@@ -93,7 +95,7 @@ export const PagesZone = () => {
 
     const handleOpenSaveModal = () => {
         if (!title.trim()) {
-            setError("Write a title before saving.");
+            setError(t("pages.writeTitleFirst"));
             return;
         }
         setError("");
@@ -101,7 +103,6 @@ export const PagesZone = () => {
         setShowSaveModal(true);
     };
 
-    
     const handleInlineCreateFolder = async () => {
         if (!inlineFolderTitle.trim()) return;
         const data = await createFolder(inlineFolderTitle.trim());
@@ -171,13 +172,13 @@ export const PagesZone = () => {
         <div className="pz-container">
             <div className="pz-header">
                 <h2 className="pz-title">
-                    {editingPageId ? "Editing page" : "start writing..."}
+                    {editingPageId ? t("pages.editingPage") : t("pages.startWriting")}
                 </h2>
                 <div className="pz-header-right">
-                    {saved && <span className="pz-saved-badge">✓ saved</span>}
+                    {saved && <span className="pz-saved-badge">{t("pages.saved")}</span>}
 
                     <button className="pz-save-inline-btn" onClick={handleOpenSaveModal}>
-                        save
+                        {t("pages.save")}
                     </button>
 
                     <div className="pz-dropdown-wrapper" ref={dropdownRef}>
@@ -187,22 +188,10 @@ export const PagesZone = () => {
                         >+</button>
                         {showDropdown && (
                             <div className="pz-dropdown-menu">
-                                <button
-                                    className="pz-dropdown-item"
-                                    onClick={handleNewPage}
-                                >New page</button>
-                                <button
-                                    className="pz-dropdown-item"
-                                    onClick={() => { setShowDropdown(false); setShowCreateFolderModal(true); }}
-                                >New folder</button>
-                                <button
-                                    className="pz-dropdown-item"
-                                    onClick={() => { setShowDropdown(false); setShowLoadModal(true); }}
-                                >Load page</button>
-                                <button
-                                    className="pz-dropdown-item"
-                                    onClick={() => { setShowDropdown(false); navigate("/folders"); }}
-                                >Go to files</button>
+                                <button className="pz-dropdown-item" onClick={handleNewPage}>{t("pages.newPage")}</button>
+                                <button className="pz-dropdown-item" onClick={() => { setShowDropdown(false); setShowCreateFolderModal(true); }}>{t("pages.newFolder")}</button>
+                                <button className="pz-dropdown-item" onClick={() => { setShowDropdown(false); setShowLoadModal(true); }}>{t("pages.loadPage")}</button>
+                                <button className="pz-dropdown-item" onClick={() => { setShowDropdown(false); navigate("/folders"); }}>{t("pages.goToFiles")}</button>
                             </div>
                         )}
                     </div>
@@ -211,32 +200,31 @@ export const PagesZone = () => {
 
             <input
                 className="pz-input-title"
-                placeholder="Title..."
+                placeholder={t("pages.titlePlaceholder")}
                 value={title}
                 onChange={e => setTitle(e.target.value)}
             />
 
             <textarea
                 className="pz-textarea"
-                placeholder="Write your notes here while you work..."
+                placeholder={t("pages.contentPlaceholder")}
                 value={content}
                 onChange={e => setContent(e.target.value)}
             />
 
             {error && <p className="pz-error">{error}</p>}
 
-           
             {showSaveModal && (
                 <div className="pz-overlay" onClick={() => setShowSaveModal(false)}>
                     <div className="pz-modal" onClick={e => e.stopPropagation()}>
-                        <div className="pz-modal-title">Which folder to save in?</div>
+                        <div className="pz-modal-title">{t("pages.whichFolder")}</div>
 
                         {folders.length === 0 ? (
                             <>
-                                <p className="pz-modal-empty">You have no folders. Create one to save.</p>
+                                <p className="pz-modal-empty">{t("pages.noFolders")}</p>
                                 <input
                                     className="pz-select"
-                                    placeholder="Folder name..."
+                                    placeholder={t("pages.folderNamePlaceholder")}
                                     value={inlineFolderTitle}
                                     onChange={e => setInlineFolderTitle(e.target.value)}
                                     onKeyDown={e => e.key === "Enter" && handleInlineCreateFolder()}
@@ -244,12 +232,12 @@ export const PagesZone = () => {
                                     style={{ marginTop: "4px" }}
                                 />
                                 <div className="pz-modal-actions">
-                                    <button className="pz-btn-cancel" onClick={() => setShowSaveModal(false)}>Cancel</button>
+                                    <button className="pz-btn-cancel" onClick={() => setShowSaveModal(false)}>{t("common.cancel")}</button>
                                     <button
                                         className="pz-btn-primary"
                                         disabled={!inlineFolderTitle.trim()}
                                         onClick={handleInlineCreateFolder}
-                                    >Create folder</button>
+                                    >{t("pages.createFolder")}</button>
                                 </div>
                             </>
                         ) : (
@@ -259,18 +247,18 @@ export const PagesZone = () => {
                                     value={selectedFolder}
                                     onChange={e => setSelectedFolder(e.target.value)}
                                 >
-                                    <option value="">-- Select a folder --</option>
+                                    <option value="">{t("pages.selectFolder")}</option>
                                     {folders.map(f => (
                                         <option key={f.id} value={f.id}>{f.title}</option>
                                     ))}
                                 </select>
                                 <div className="pz-modal-actions">
-                                    <button className="pz-btn-cancel" onClick={() => setShowSaveModal(false)}>Cancel</button>
+                                    <button className="pz-btn-cancel" onClick={() => setShowSaveModal(false)}>{t("common.cancel")}</button>
                                     <button
                                         className="pz-btn-primary"
                                         disabled={!selectedFolder}
                                         onClick={handleSave}
-                                    >Save</button>
+                                    >{t("common.save")}</button>
                                 </div>
                             </>
                         )}
@@ -278,22 +266,21 @@ export const PagesZone = () => {
                 </div>
             )}
 
-            
             {showLoadModal && (
                 <div className="pz-overlay" onClick={handleCancelLoad}>
                     <div className="pz-modal" onClick={e => e.stopPropagation()}>
-                        <div className="pz-modal-title">Load page</div>
+                        <div className="pz-modal-title">{t("pages.loadPage")}</div>
                         {folders.length === 0 ? (
-                            <p className="pz-modal-empty">You have no folders yet.</p>
+                            <p className="pz-modal-empty">{t("pages.noFoldersYet")}</p>
                         ) : (
                             <>
-                                <label className="pz-modal-label">Folder</label>
+                                <label className="pz-modal-label">{t("pages.folder")}</label>
                                 <select
                                     className="pz-select"
                                     value={loadFolderId}
                                     onChange={e => setLoadFolderId(e.target.value)}
                                 >
-                                    <option value="">-- Select a folder --</option>
+                                    <option value="">{t("pages.selectFolder")}</option>
                                     {folders.map(f => (
                                         <option key={f.id} value={f.id}>{f.title}</option>
                                     ))}
@@ -302,9 +289,9 @@ export const PagesZone = () => {
                                     <>
                                         <label className="pz-modal-label" style={{ marginTop: "12px" }}>Page</label>
                                         {loadingPages ? (
-                                            <p className="pz-modal-empty">Loading...</p>
+                                            <p className="pz-modal-empty">{t("pages.loadingPages")}</p>
                                         ) : loadPages.length === 0 ? (
-                                            <p className="pz-modal-empty">This folder has no pages.</p>
+                                            <p className="pz-modal-empty">{t("pages.noPages")}</p>
                                         ) : (
                                             <div className="pz-page-list">
                                                 {loadPages.map(page => (
@@ -324,46 +311,44 @@ export const PagesZone = () => {
                             </>
                         )}
                         <div className="pz-modal-actions" style={{ marginTop: "16px" }}>
-                            <button className="pz-btn-cancel" onClick={handleCancelLoad}>Cancel</button>
+                            <button className="pz-btn-cancel" onClick={handleCancelLoad}>{t("common.cancel")}</button>
                         </div>
                     </div>
                 </div>
             )}
 
-            
             {showCreateFolderModal && (
                 <div className="pz-overlay" onClick={() => setShowCreateFolderModal(false)}>
                     <div className="pz-modal" onClick={e => e.stopPropagation()}>
-                        <div className="pz-modal-title">New folder</div>
+                        <div className="pz-modal-title">{t("pages.newFolder")}</div>
                         <input
                             className="pz-input-title"
-                            placeholder="Folder name..."
+                            placeholder={t("pages.folderNamePlaceholder")}
                             value={newFolderTitle}
                             onChange={e => setNewFolderTitle(e.target.value)}
                             onKeyDown={e => e.key === "Enter" && handleCreateFolder()}
                             autoFocus
                         />
                         <div className="pz-modal-actions" style={{ marginTop: "16px" }}>
-                            <button className="pz-btn-cancel" onClick={() => setShowCreateFolderModal(false)}>Cancel</button>
-                            <button className="pz-btn-primary" onClick={handleCreateFolder}>Create</button>
+                            <button className="pz-btn-cancel" onClick={() => setShowCreateFolderModal(false)}>{t("common.cancel")}</button>
+                            <button className="pz-btn-primary" onClick={handleCreateFolder}>{t("pages.create")}</button>
                         </div>
                     </div>
                 </div>
             )}
 
-            
             {showNewPageModal && (
                 <div className="pz-overlay" onClick={() => setShowNewPageModal(false)}>
                     <div className="pz-modal" onClick={e => e.stopPropagation()}>
-                        <div className="pz-modal-title">You have unsaved content</div>
+                        <div className="pz-modal-title">{t("pages.unsavedContent")}</div>
                         <p style={{ fontSize: "0.88rem", color: "var(--color-text-secondary)", margin: "0 0 1rem" }}>
-                            What do you want to do with "<strong>{title || "Untitled"}</strong>"?
+                            {t("pages.unsavedQuestion")} "<strong>{title || "Untitled"}</strong>"?
                         </p>
                         <div className="pz-modal-actions" style={{ justifyContent: "space-between" }}>
-                            <button className="pz-btn-cancel" onClick={() => setShowNewPageModal(false)}>Cancel</button>
+                            <button className="pz-btn-cancel" onClick={() => setShowNewPageModal(false)}>{t("common.cancel")}</button>
                             <div style={{ display: "flex", gap: "8px" }}>
-                                <button className="pz-btn-cancel" onClick={handleDiscardAndNew}>Discard</button>
-                                <button className="pz-btn-primary" onClick={handleSaveAndNew}>Save</button>
+                                <button className="pz-btn-cancel" onClick={handleDiscardAndNew}>{t("pages.discard")}</button>
+                                <button className="pz-btn-primary" onClick={handleSaveAndNew}>{t("common.save")}</button>
                             </div>
                         </div>
                     </div>

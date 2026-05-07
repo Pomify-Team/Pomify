@@ -2,9 +2,11 @@ import "../styles/loginModal.css";
 import { useState } from "react";
 import { loginUser, forgotPassword } from "../services/loginBS";
 import { useNavigate } from "react-router-dom";
+import useLanguage from "../context/LanguageContext";
 
 export const LoginModal = ({ onClose, onSwitchToRegister }) => {
 
+    const { t } = useLanguage();
     const [user, setUser] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +26,7 @@ export const LoginModal = ({ onClose, onSwitchToRegister }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!user.email || !user.password) {
-            setError("All fields are required.");
+            setError(t("auth.allFieldsRequired"));
             return;
         }
         try {
@@ -39,10 +41,10 @@ export const LoginModal = ({ onClose, onSwitchToRegister }) => {
 
     const handleForgot = async (e) => {
         e.preventDefault();
-        if (!forgotEmail) { setForgotMessage("Please enter your email."); return; }
+        if (!forgotEmail) { setForgotMessage(t("auth.pleaseEnterEmail")); return; }
         try {
             await forgotPassword(forgotEmail.trim().toLowerCase());
-            setForgotMessage("Check your email for the reset link!");
+            setForgotMessage(t("auth.checkEmail"));
         } catch (err) {
             setForgotMessage(err.message);
         }
@@ -56,7 +58,7 @@ export const LoginModal = ({ onClose, onSwitchToRegister }) => {
 
                 {view === "login" ? (
                     <>
-                        <h2 className="modal-title">log in</h2>
+                        <h2 className="modal-title">{t("auth.loginTitle")}</h2>
 
                         <form className="modal-form" onSubmit={handleSubmit}>
                             <div className="form-group">
@@ -64,7 +66,7 @@ export const LoginModal = ({ onClose, onSwitchToRegister }) => {
                                     type="email"
                                     name="email"
                                     value={user.email}
-                                    placeholder="email"
+                                    placeholder={t("auth.email")}
                                     onChange={handleChange}
                                     className="form-input"
                                 />
@@ -74,7 +76,7 @@ export const LoginModal = ({ onClose, onSwitchToRegister }) => {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     name="password"
-                                    placeholder="password"
+                                    placeholder={t("auth.password")}
                                     value={user.password}
                                     onChange={handleChange}
                                     className="form-input"
@@ -95,36 +97,36 @@ export const LoginModal = ({ onClose, onSwitchToRegister }) => {
                                         className="form-error-link"
                                         onClick={() => { setView("forgot"); setError(""); }}
                                     >
-                                        <u>Reset password</u>
+                                        <u>{t("auth.resetPassword")}</u>
                                     </span>
                                 </div>
                             )}
 
                             <button type="submit" className="modal-btn-submit">
-                                log in
+                                {t("auth.loginTitle")}
                             </button>
                         </form>
 
                         <p className="modal-footer-text">
-                            Don't have an account?{" "}
+                            {t("auth.noAccount")}{" "}
                             <span className="modal-link" onClick={onSwitchToRegister}>
-                                Sign up
+                                {t("auth.signUp")}
                             </span>
                         </p>
                     </>
                 ) : (
                     <>
-                        <h2 className="modal-title">reset password</h2>
+                        <h2 className="modal-title">{t("auth.resetPasswordTitle")}</h2>
 
                         <p className="modal-subtitle">
-                            Enter your email to receive a reset link.
+                            {t("auth.resetPasswordDesc")}
                         </p>
 
                         <form className="modal-form" onSubmit={handleForgot}>
                             <div className="form-group">
                                 <input
                                     type="email"
-                                    placeholder="email"
+                                    placeholder={t("auth.email")}
                                     value={forgotEmail}
                                     onChange={(e) => setForgotEmail(e.target.value)}
                                     className="form-input"
@@ -136,17 +138,17 @@ export const LoginModal = ({ onClose, onSwitchToRegister }) => {
                             )}
 
                             <button type="submit" className="modal-btn-submit">
-                                send reset link
+                                {t("auth.sendResetLink")}
                             </button>
                         </form>
 
                         <p className="modal-footer-text">
                             <span className="modal-link" onClick={() => setView("login")}>
-                                ← Back to log in
+                                {t("auth.backToLogin")}
                             </span>
                             {" · "}
                             <span className="modal-link" onClick={onSwitchToRegister}>
-                                Sign up
+                                {t("auth.signUp")}
                             </span>
                         </p>
                     </>

@@ -1,24 +1,28 @@
 import { registerUser } from "../services/registerBS";
 import "../styles/registerModal.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useLanguage from "../context/LanguageContext";
 
 const PASSWORD_RULES = [
-    { id: "length", label: "At least 8 characters",    test: (p) => p.length >= 8 },
-    { id: "number", label: "At least 1 number",         test: (p) => /\d/.test(p) },
-    { id: "symbol", label: "At least 1 symbol (!@#$…)", test: (p) => /[^a-zA-Z0-9]/.test(p) },
+    { id: "length", test: (p) => p.length >= 8 },
+    { id: "number", test: (p) => /\d/.test(p) },
+    { id: "symbol", test: (p) => /[^a-zA-Z0-9]/.test(p) },
 ];
 
 const getStrength = (password) => {
     const passed = PASSWORD_RULES.filter(r => r.test(password)).length;
-    if (passed === 0) return { level: 0, label: "",       color: "transparent" };
-    if (passed === 1) return { level: 1, label: "Weak",   color: "#E05252" };
-    if (passed === 2) return { level: 2, label: "Fair",   color: "#E0A852" };
-    return               { level: 3, label: "Strong", color: "#52A87C" };
+    if (passed === 0) return { level: 0, labelKey: "",       color: "transparent" };
+    if (passed === 1) return { level: 1, labelKey: "weak",   color: "#E05252" };
+    if (passed === 2) return { level: 2, labelKey: "fair",   color: "#E0A852" };
+    return               { level: 3, labelKey: "strong", color: "#52A87C" };
 };
+
+const ruleKeys = { length: "auth.ruleLength", number: "auth.ruleNumber", symbol: "auth.ruleSymbol" };
 
 export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
 
+    const { t } = useLanguage();
     const [error, setError] = useState("");
     const [user, setUser] = useState({
         name: "",
@@ -52,15 +56,15 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
         e.preventDefault();
 
         if (!user.name || !user.email || !user.password || !user.confirmPassword) {
-            setError("All fields are required.");
+            setError(t("auth.allFieldsRequired"));
             return;
         }
         if (!allRulesPassed) {
-            setError("Your password doesn't meet the security requirements.");
+            setError(t("auth.passwordRequirements"));
             return;
         }
         if (user.password !== user.confirmPassword) {
-            setError("Passwords do not match.");
+            setError(t("auth.passwordsMismatch"));
             return;
         }
         try {
@@ -80,7 +84,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
 
                 <button className="modal-close" onClick={onClose}>✕</button>
 
-                <h2 className="modal-title">register</h2>
+                <h2 className="modal-title">{t("auth.register")}</h2>
 
                 <form className="modal-form" onSubmit={handleSubmit}>
 
@@ -88,7 +92,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
                         <input
                             type="text"
                             name="name"
-                            placeholder="name"
+                            placeholder={t("auth.name")}
                             value={user.name}
                             onChange={handleChange}
                             className="form-input"
@@ -99,7 +103,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
                         <input
                             type="email"
                             name="email"
-                            placeholder="email"
+                            placeholder={t("auth.email")}
                             value={user.email}
                             onChange={handleChange}
                             className="form-input"
@@ -110,7 +114,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"
-                            placeholder="password"
+                            placeholder={t("auth.password")}
                             value={user.password}
                             onChange={handlePasswordChange}
                             className="form-input"
@@ -136,7 +140,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
                                 />
                             </div>
                             <span className="strength-label" style={{ color: strength.color }}>
-                                {strength.label}
+                                {strength.labelKey ? t(`auth.${strength.labelKey}`) : ""}
                             </span>
                             <ul className="password-rules">
                                 {PASSWORD_RULES.map(rule => {
@@ -144,7 +148,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
                                     return (
                                         <li key={rule.id} className={ok ? "rule-ok" : "rule-fail"}>
                                             <span className="rule-icon">{ok ? "✓" : "✗"}</span>
-                                            {rule.label}
+                                            {t(ruleKeys[rule.id])}
                                         </li>
                                     );
                                 })}
@@ -156,7 +160,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
                         <input
                             type={showConfirmPassword ? "text" : "password"}
                             name="confirmPassword"
-                            placeholder="confirm password"
+                            placeholder={t("auth.confirmPassword")}
                             value={user.confirmPassword}
                             onChange={handleChange}
                             className="form-input"
@@ -174,7 +178,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
 
                     {success && (
                         <div className="form-success">
-                            ✓ Account created! Redirecting to login...
+                            {t("auth.accountCreated")}
                         </div>
                     )}
 
@@ -183,13 +187,13 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
                         className="modal-btn-submit"
                         disabled={!allRulesPassed || success}
                     >
-                        {success ? "Account created!" : "create account"}
+                        {success ? t("auth.accountCreatedBtn") : t("auth.createAccount")}
                     </button>
                 </form>
 
                 <p className="modal-footer-text">
-                    Already have an account?{" "}
-                    <span className="modal-link" onClick={onSwitchToLogin}>Log in</span>
+                    {t("auth.haveAccount")}{" "}
+                    <span className="modal-link" onClick={onSwitchToLogin}>{t("auth.loginLink")}</span>
                 </p>
 
             </div>

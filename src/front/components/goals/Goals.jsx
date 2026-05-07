@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Goals.css";
+import useLanguage from "../../context/LanguageContext";
 
 import {
   getGoals,
@@ -10,6 +11,7 @@ import {
 } from "./GoalsService";
 
 export const Goals = () => {
+  const { t } = useLanguage();
   const [goals, setGoals] = useState([]);
   const [newGoal, setNewGoal] = useState("");
   const [newGoalStatus, setNewGoalStatus] = useState("");
@@ -128,15 +130,15 @@ export const Goals = () => {
   const allSelected = goals.length > 0 && selectedGoals.length === goals.length;
 
   const statusOptions = [
-    { value: "progress", label: "In Progress", bg: "rgba(168,218,220,0.3)", color: "#457b9d" },
-    { value: "urgent",   label: "Urgent",      bg: "rgba(230,57,70,0.15)",  color: "#e63946" },
-    { value: "done",     label: "Done",        bg: "rgba(69,123,157,0.15)", color: "#457b9d" },
+    { value: "progress", label: t("goals.inProgress"), bg: "rgba(168,218,220,0.3)", color: "#457b9d" },
+    { value: "urgent",   label: t("goals.urgent"),     bg: "rgba(230,57,70,0.15)",  color: "#e63946" },
+    { value: "done",     label: t("goals.done"),       bg: "rgba(69,123,157,0.15)", color: "#457b9d" },
   ];
 
   const statusLabel = {
-    progress: "In Progress",
-    urgent: "Urgent",
-    done: "Done"
+    progress: t("goals.inProgress"),
+    urgent: t("goals.urgent"),
+    done: t("goals.done"),
   };
 
   return (
@@ -154,20 +156,18 @@ export const Goals = () => {
           fontSize: "0.9rem"
         }}
       >
-        ← Home
+        {t("common.home")}
       </button>
 
-      <h1 className="goals-title">Your Goals</h1>
-      <p className="goals-subtitle">
-        Break your session into clear goals. Small steps lead to big results — write down what you want to achieve today.
-      </p>
+      <h1 className="goals-title">{t("goals.yourGoals")}</h1>
+      <p className="goals-subtitle">{t("goals.subtitle")}</p>
 
       <div className="goals-layout">
         <div className="goals-column">
           <div className="goal-create">
             <input
               className="goal-input"
-              placeholder="Create a new goal..."
+              placeholder={t("goals.createPlaceholder")}
               value={newGoal}
               onChange={(e) => setNewGoal(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCreateGoal()}
@@ -192,7 +192,7 @@ export const Goals = () => {
                   backgroundPosition: "right 12px center",
                 }}
               >
-                {newGoalStatus ? statusLabel[newGoalStatus] : "Status"}
+                {newGoalStatus ? statusLabel[newGoalStatus] : t("goals.status")}
               </button>
 
               {statusOpen && (
@@ -237,16 +237,12 @@ export const Goals = () => {
             </div>
 
             <button className="btn-primary" onClick={handleCreateGoal}>
-              Add
+              {t("goals.add")}
             </button>
           </div>
 
           {goals.length > 0 && (
-            <div style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              margin: "0.75rem 0 0.4rem"
-            }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", margin: "0.75rem 0 0.4rem" }}>
               <button
                 onClick={toggleSelectAll}
                 style={{
@@ -259,7 +255,7 @@ export const Goals = () => {
                   cursor: "pointer"
                 }}
               >
-                {allSelected ? "Deselect all" : "Select all"}
+                {allSelected ? t("goals.deselectAll") : t("goals.selectAll")}
               </button>
             </div>
           )}
@@ -276,29 +272,15 @@ export const Goals = () => {
               background: "var(--color-surface)",
               border: "1px solid var(--color-divider)"
             }}>
-              <span style={{
-                fontSize: "12px",
-                color: "var(--color-text-secondary)",
-                marginRight: "4px"
-              }}>
-                {selectedGoals.length} selected —
+              <span style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginRight: "4px" }}>
+                {selectedGoals.length} {t("goals.selectedCount")}
               </span>
-              <button className="status-btn urgent" onClick={() => bulkChangeStatus("urgent")}>Urgent</button>
-              <button className="status-btn progress" onClick={() => bulkChangeStatus("progress")}>In Progress</button>
-              <button className="status-btn done" onClick={() => bulkChangeStatus("done")}>Done</button>
-              <div style={{
-                width: "1px",
-                height: "18px",
-                background: "var(--color-divider)",
-                margin: "0 4px",
-                flexShrink: 0
-              }} />
-              <button
-                className="status-btn urgent"
-                onClick={bulkDelete}
-                style={{ opacity: 0.85 }}
-              >
-                Delete all
+              <button className="status-btn urgent" onClick={() => bulkChangeStatus("urgent")}>{t("goals.urgent")}</button>
+              <button className="status-btn progress" onClick={() => bulkChangeStatus("progress")}>{t("goals.inProgress")}</button>
+              <button className="status-btn done" onClick={() => bulkChangeStatus("done")}>{t("goals.done")}</button>
+              <div style={{ width: "1px", height: "18px", background: "var(--color-divider)", margin: "0 4px", flexShrink: 0 }} />
+              <button className="status-btn urgent" onClick={bulkDelete} style={{ opacity: 0.85 }}>
+                {t("goals.deleteAll")}
               </button>
             </div>
           )}
@@ -339,7 +321,7 @@ export const Goals = () => {
                     whiteSpace: "nowrap"
                   }}
                 >
-                  {selectedGoals.includes(goal.id) ? "✓ Selected" : "Edit status"}
+                  {selectedGoals.includes(goal.id) ? t("goals.selected") : t("goals.editStatus")}
                 </button>
               </div>
 
@@ -349,19 +331,19 @@ export const Goals = () => {
                     className={`status-btn urgent ${goal.status === "urgent" ? "active" : ""}`}
                     onClick={() => changeStatus(goal.id, "urgent")}
                   >
-                    Urgent
+                    {t("goals.urgent")}
                   </button>
                   <button
                     className={`status-btn progress ${goal.status === "progress" ? "active" : ""}`}
                     onClick={() => changeStatus(goal.id, "progress")}
                   >
-                    In Progress
+                    {t("goals.inProgress")}
                   </button>
                   <button
                     className={`status-btn done ${goal.status === "done" ? "active" : ""}`}
                     onClick={() => changeStatus(goal.id, "done")}
                   >
-                    Done
+                    {t("goals.done")}
                   </button>
                 </div>
               </div>
@@ -375,7 +357,7 @@ export const Goals = () => {
 
           {goals.length > 3 && (
             <button className="back-to-top-simple" onClick={scrollToTop}>
-              ↑ Back to top
+              {t("goals.backToTop")}
             </button>
           )}
         </div>
@@ -395,9 +377,9 @@ export const Goals = () => {
               }}
             />
             <div className="legend">
-              <span>Urgent: {stats.urgent}</span>
-              <span>Progress: {stats.progress}</span>
-              <span>Done: {stats.done}</span>
+              <span>{t("goals.urgentLabel")} {stats.urgent}</span>
+              <span>{t("goals.progressLabel")} {stats.progress}</span>
+              <span>{t("goals.doneLabel")} {stats.done}</span>
             </div>
           </div>
         </div>

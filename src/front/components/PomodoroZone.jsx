@@ -4,6 +4,7 @@ import { BreakModal } from "./BreakModal";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { TIMER_PRESETS_LIST } from "../store";
 import { useNavigate } from "react-router-dom";
+import useLanguage from "../context/LanguageContext";
 
 const formatTotal = (s) => {
     const h = Math.floor(s / 3600);
@@ -19,6 +20,7 @@ const hasHours = (s) => s >= 3600;
 
 export const PomodoroZone = () => {
     const { store, dispatch, audioRef } = useGlobalReducer();
+    const { t } = useLanguage();
     const p = store.pomodoro;
     const { currentPlaylist, currentTrackIndex, isPlaying } = store;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -83,10 +85,15 @@ export const PomodoroZone = () => {
     };
 
     const phaseLabel = useMemo(() => {
-        return p.currentPhase === "focus" ? "time to focus!" : "break time";
-    }, [p.currentPhase]);
+        return p.currentPhase === "focus" ? t("pomodoro.focusPhase") : t("pomodoro.breakPhase");
+    }, [p.currentPhase, t]);
 
-    const startBtnLabel = p.breakSkipped ? "continue break" : p.isRunning ? "pause" : "start";
+    const startBtnLabel = p.breakSkipped
+        ? t("pomodoro.continueBreak")
+        : p.isRunning
+        ? t("pomodoro.pause")
+        : t("pomodoro.start");
+
     const startBtnClass = `pomodoro-start-button${p.isRunning ? " is-running" : ""}${p.breakSkipped ? " is-break-skipped" : ""}`;
 
     const handleStartPause = () => dispatch({ type: "pomodoro_start_pause" });
@@ -122,7 +129,7 @@ export const PomodoroZone = () => {
                             className="pomodoro-time-button"
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >
-                            Pomodoro Time
+                            {t("pomodoro.time")}
                         </button>
 
                         {isMenuOpen && (
@@ -163,7 +170,7 @@ export const PomodoroZone = () => {
                             className="pomodoro-restore-btn"
                             onClick={handleRestorePomodoro}
                         >
-                            restore pomodoro
+                            {t("pomodoro.restore")}
                         </button>
                     )}
                 </div>
@@ -241,7 +248,7 @@ export const PomodoroZone = () => {
                         className="pomodoro-music-button"
                         onClick={() => navigate("/music")}
                     >
-                        choose music
+                        {t("pomodoro.chooseMusic")}
                     </button>
                 </div>
             </div>

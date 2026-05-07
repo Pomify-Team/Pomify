@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'motion/react';
 import './FolderPanel.css';
+import useLanguage from '../../context/LanguageContext';
 
 const FolderClosedIcon = () => (
   <svg width="20" height="20" viewBox="0 0 100 100" fill="#457b9d" xmlns="http://www.w3.org/2000/svg">
@@ -54,6 +55,7 @@ const FolderPanel = ({
   showGradients = true,
   displayScrollbar = true,
 }) => {
+  const { t } = useLanguage();
   const listRef = useRef(null);
   const [topGradientOpacity, setTopGradientOpacity] = useState(0);
   const [bottomGradientOpacity, setBottomGradientOpacity] = useState(1);
@@ -91,7 +93,7 @@ const FolderPanel = ({
       >
         {folders.length === 0 && (
           <div style={{ textAlign: 'center', color: '#6B7280', fontSize: '13px', padding: '20px 0' }}>
-            No folders yet
+            {t("folders.noFoldersYet")}
           </div>
         )}
         {folders.map((folder, index) => (

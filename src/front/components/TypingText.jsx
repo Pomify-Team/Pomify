@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
-
-const phrases = ["Your focus", "Your rhythm", "Your progress"];
+import useLanguage from "../context/LanguageContext";
 
 export const TypingText = () => {
-    const [displayed, setDisplayed] = useState("");
+    const { t } = useLanguage();
+    const phrases = t("welcome.typingPhrases");
     const [phraseIndex, setPhraseIndex] = useState(0);
     const [charIndex, setCharIndex] = useState(0);
+    const [displayed, setDisplayed] = useState("");
     const [deleting, setDeleting] = useState(false);
+
+    useEffect(() => {
+        setDisplayed("");
+        setCharIndex(0);
+        setDeleting(false);
+    }, [phraseIndex, phrases[0]]);
 
     useEffect(() => {
         const current = phrases[phraseIndex];
@@ -28,7 +35,7 @@ export const TypingText = () => {
         }, speed);
 
         return () => clearTimeout(timeout);
-    }, [charIndex, deleting, phraseIndex]);
+    }, [charIndex, deleting, phraseIndex, phrases]);
 
     return (
         <span>
