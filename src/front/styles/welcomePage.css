@@ -29,10 +29,23 @@
 
 .welcome-topbar {
   display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 28px 24px;
   border-bottom: 1px solid var(--divider);
+}
+
+.welcome-topbar-spacer {
+  flex: 1;
+  max-width: 120px;
+}
+
+.welcome-topbar .lang-dropdown-container {
+  flex: 1;
+  max-width: 120px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .welcome-brand {

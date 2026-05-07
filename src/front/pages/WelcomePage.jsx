@@ -28,6 +28,7 @@ export const WelcomePage = () => {
       <div className="welcome-container">
 
         <header className="welcome-topbar" id="welcome-top">
+          <div className="welcome-topbar-spacer" />
           <img src={pomifyLogo} alt="Pomify" style={{ height: "32px", width: "auto" }} />
           <div className="lang-dropdown-container" style={{ position: "relative" }}
             onMouseLeave={() => setIsLangOpen(false)}
