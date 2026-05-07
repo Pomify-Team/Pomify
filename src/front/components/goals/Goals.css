@@ -1,0 +1,329 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+.goals-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+}
+
+.goals-title {
+  text-align: center;
+  margin-bottom: 12px;
+  color: var(--color-text-primary);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.goals-subtitle {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  max-width: 520px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+.goals-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.goals-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.goal-create {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.goal-input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-divider);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  outline: none;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+}
+
+.goal-input:focus {
+  border-color: var(--color-btn-primary-bg);
+}
+
+.goal-status-select {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.goal-card {
+  background: var(--color-surface);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: all 0.2s ease;
+}
+
+.goal-card:hover {
+  transform: translateY(-3px);
+}
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goal-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.goal-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.edit-input {
+  border: 1px solid var(--color-divider);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 1rem;
+  width: 100%;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: 'Inter', 'DM Sans', sans-serif;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-divider);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.checkbox.checked {
+  background: #e63946;
+  border-color: #e63946;
+}
+
+.goal-status-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.goal-status-wrapper.show {
+  max-height: 60px;
+  opacity: 1;
+}
+
+.goal-status {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.status-btn {
+  border: none;
+  padding: 6px 0;
+  font-size: 0.90rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.5;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  height: auto;
+  overflow: visible;
+  display: inline-block;
+}
+
+.status-btn.urgent {
+  background: rgba(230, 57, 70, 0.15);
+  color: #e63946;
+}
+
+.status-btn.urgent.active {
+  background: #e63946;
+  color: white;
+}
+
+.status-btn.progress {
+  background: rgba(168, 218, 220, 0.3);
+  color: #457b9d;
+}
+
+.status-btn.progress.active {
+  background: #457b9d;
+  color: white;
+}
+
+.status-btn.done {
+  background: rgba(69, 123, 157, 0.15);
+  color: #457b9d;
+}
+
+.status-btn.done.active {
+  background: #457b9d;
+  color: white;
+}
+
+.goal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.goal-actions button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.goal-actions button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.chart-column {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.chart-card {
+  background: var(--color-surface);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+.pie {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  margin: auto;
+  position: relative;
+}
+
+.pie::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 110px;
+  height: 110px;
+  background: var(--color-surface);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.legend {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .goals-page {
+    padding: 20px 16px;
+  }
+
+  .goals-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-column {
+    order: -1;
+  }
+
+  .chart-card {
+    padding: 1.2rem;
+  }
+
+  .pie {
+    width: 140px;
+    height: 140px;
+  }
+
+  .pie::after {
+    width: 80px;
+    height: 80px;
+  }
+
+  .goal-create {
+    flex-direction: column;
+  }
+
+  .status-btn {
+    font-size: 0.78rem;
+    padding: 5px 0;
+  }
+}
+
+.back-to-top-simple {
+  all: unset;
+  display: block;
+  margin: 30px auto;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--color-divider);
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-align: center;
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+
+.back-to-top-simple:hover {
+  background: var(--color-surface);
+  border-color: var(--color-text-secondary);
+  transform: translateY(-2px);
+}
+
+.back-to-top-simple:active {
+  transform: translateY(0);
+}

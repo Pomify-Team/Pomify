@@ -1,0 +1,140 @@
+
+.bm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 100;
+    animation: bm-fade-in 0.25s ease;
+}
+
+@keyframes bm-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.bm-card {
+    width: 100%;
+    max-width: 600px;
+    min-height: 420px;
+    background: #F2F5F0;
+    border: 1px solid rgba(176, 187, 168, 0.55);
+    border-radius: 20px;
+    padding: 52px 48px 48px;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.14);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: bm-slide-up 0.28s ease;
+}
+
+@keyframes bm-slide-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.bm-close {
+    position: absolute;
+    top: 20px;
+    right: 22px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #6B7280;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 6px;
+    border-radius: 6px;
+    transition: color 0.15s;
+}
+
+.bm-close:hover {
+    color: #1A1A1A;
+}
+
+.bm-label {
+    margin: 0 0 16px;
+    font-size: 0.9rem;
+    color: #6B7280;
+    text-transform: lowercase;
+    letter-spacing: 0.06em;
+}
+
+.bm-timer {
+    margin: 0 0 28px;
+    font-size: clamp(4rem, 12vw, 6rem);
+    font-weight: 800;
+    line-height: 1;
+    color: #5E7C6A;
+    letter-spacing: -0.02em;
+}
+
+.bm-divider {
+    width: 48px;
+    height: 1.5px;
+    background: #B0BBA8;
+    margin: 0 0 28px;
+    border-radius: 2px;
+}
+
+.bm-tip {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #1A1A1A;
+    line-height: 1.7;
+    text-align: center;
+    max-width: 400px;
+}
+
+.bm-confirm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+}
+
+.bm-confirm-text {
+    margin: 0;
+    font-size: 1rem;
+    color: #1A1A1A;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.bm-confirm-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.bm-btn {
+    border-radius: 999px;
+    padding: 11px 28px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    text-transform: lowercase;
+    transition: opacity 0.15s;
+}
+
+.bm-btn:hover {
+    opacity: 0.8;
+}
+
+.bm-btn-yes {
+    background: #2D3A4A;
+    color: #fff;
+    border: none;
+}
+
+.bm-btn-no {
+    background: transparent;
+    color: #2D3A4A;
+    border: 1px solid #2D3A4A;
+}
