@@ -29,7 +29,7 @@
 
 .welcome-topbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 28px 24px;
   border-bottom: 1px solid var(--divider);

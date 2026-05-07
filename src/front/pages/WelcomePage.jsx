@@ -12,9 +12,10 @@ import useLanguage from "../context/LanguageContext";
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
 export const WelcomePage = () => {
-  const { t } = useLanguage();
+  const { t, language, changeLanguage } = useLanguage();
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
 
   const pomodoroModes = [
     { label: "20/5", title: t("welcome.lightFocusTitle"), desc: t("welcome.lightFocusDesc"), bg: "#E2E8DF" },
@@ -28,6 +29,30 @@ export const WelcomePage = () => {
 
         <header className="welcome-topbar" id="welcome-top">
           <img src={pomifyLogo} alt="Pomify" style={{ height: "32px", width: "auto" }} />
+          <div className="lang-dropdown-container" style={{ position: "relative" }}
+            onMouseLeave={() => setIsLangOpen(false)}
+          >
+            <button className="lang-btn" onClick={() => setIsLangOpen(!isLangOpen)}>
+              <span className="lang-label">{language === "en" ? "English" : "Español"}</span>
+              <span className="lang-arrow">▾</span>
+            </button>
+            {isLangOpen && (
+              <div className="lang-menu">
+                <button
+                  className={`lang-option${language === "en" ? " active" : ""}`}
+                  onClick={() => { changeLanguage("en"); setIsLangOpen(false); }}
+                >
+                  English
+                </button>
+                <button
+                  className={`lang-option${language === "es" ? " active" : ""}`}
+                  onClick={() => { changeLanguage("es"); setIsLangOpen(false); }}
+                >
+                  Español
+                </button>
+              </div>
+            )}
+          </div>
         </header>
 
         <section className="welcome-hero">
