@@ -12,7 +12,7 @@ import { PublicLayout } from "./pages/PublicLayout";
 import { ResetPassword } from "./pages/ResetPassword";
 import { Goals } from "./components/goals/Goals";
 import FoldersPage from "./components/pages-y-folder/FoldersPage";
-import { SoundList } from "./pages/API-externa/Freesound";
+import { SoundList } from "./pages/API-externa/Freesound.jsx";
 import { ProfilePage } from "./pages/ProfilePage";
 import { AboutPage } from "./pages/AboutPage";
 
