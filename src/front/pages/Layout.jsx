@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom/dist";
+import { Outlet, useLocation, Navigate } from "react-router-dom/dist";
 import ScrollToTop from "../components/ScrollToTop";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -10,10 +10,10 @@ export const Layout = () => {
     const { dispatch } = useGlobalReducer();
     const location = useLocation();
     const isHome = location.pathname === "/home";
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
         const loadUser = async () => {
-            const token = localStorage.getItem("token");
             if (!token) return;
             const user = await getProfile();
             if (user) {
@@ -25,6 +25,8 @@ export const Layout = () => {
         };
         loadUser();
     }, []);
+
+    if (!token) return <Navigate to="/" replace />;
 
     return (
         <ScrollToTop>
