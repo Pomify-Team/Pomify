@@ -1,81 +1,147 @@
-# Plantilla de WebApp con React JS y Flask API
+# 🍅 Pomify
 
-Construye aplicaciones web usando React.js para el front end y python/flask para tu API backend.
+> Una app de productividad basada en la técnica Pomodoro — construida con React + Flask como proyecto final de 4Geeks Academy.
 
-- La documentación se puede encontrar aquí: https://4geeks.com/docs/start/react-flask-template
-- Aquí hay un video sobre [cómo usar esta plantilla](https://www.youtube.com/watch?v=qBz6Ddd2m38)
-- Integrado con Pipenv para la gestión de paquetes.
-- Despliegue rápido a Render [en solo unos pocos pasos aquí](https://4geeks.com/es/docs/start/despliega-con-render-com).
-- Uso del archivo .env.
-- Integración de SQLAlchemy para la abstracción de bases de datos.
+---
 
-### 1) Instalación:
+## ¿Qué es Pomify?
 
-> Si usas Github Codespaces (recomendado) o Gitpod, esta plantilla ya vendrá con Python, Node y la base de datos Posgres instalados. Si estás trabajando localmente, asegúrate de instalar Python 3.10, Node.
+Pomify te ayuda a trabajar mejor usando la [Técnica Pomodoro](https://es.wikipedia.org/wiki/T%C3%A9cnica_Pomodoro): sesiones de trabajo concentrado seguidas de descansos cortos. Inicia sesión, activa el temporizador y construye momentum — bloque a bloque.
 
-Se recomienda instalar el backend primero, asegúrate de tener Python 3.10, Pipenv y un motor de base de datos (se recomienda Posgres).
+---
 
-1. Instala los paquetes de python: `$ pipenv install`
-2. Crea un archivo .env basado en el .env.example: `$ cp .env.example .env`
-3. Instala tu motor de base de datos y crea tu base de datos, dependiendo de tu base de datos, debes crear una variable DATABASE_URL con uno de los valores posibles, asegúrate de reemplazar los valores con la información de tu base de datos:
+## Stack tecnológico
 
-| Motor     | DATABASE_URL                                        |
-| --------- | --------------------------------------------------- |
-| SQLite    | sqlite:////test.db                                  |
-| MySQL     | mysql://username:password@localhost:port/example    |
-| Postgres  | postgres://username:password@localhost:5432/example |
+| Capa | Tecnología |
+|---|---|
+| Frontend | React 18 · Vite · React Router DOM v6 |
+| Animaciones | Motion · Lenis (scroll suave) |
+| Backend | Python · Flask · SQLAlchemy |
+| Base de datos | PostgreSQL |
+| Autenticación | JWT (vía Flask) |
+| Almacenamiento | Cloudinary |
+| Deploy | Render.com |
+| Entorno de desarrollo | GitHub Codespaces · Gitpod |
 
-4. Migra las migraciones: `$ pipenv run migrate` (omite si no has hecho cambios en los modelos en `./src/api/models.py`)
-5. Ejecuta las migraciones: `$ pipenv run upgrade`
-6. Ejecuta la aplicación: `$ pipenv run start`
+---
 
-> Nota: Los usuarios de Codespaces pueden conectarse a psql escribiendo: `psql -h localhost -U gitpod example`
+## Funcionalidades
 
-### Deshacer una migración
+- ⏱ **Temporizador Pomodoro** — ciclos de trabajo y descanso configurables
+- 🔐 **Autenticación** — registro, inicio de sesión y sesiones personales
+- 📊 **Historial de sesiones** — guarda y revisa tus Pomodoros completados
+- 🎨 **UI fluida** — transiciones animadas con Motion y Lenis
+- ☁️ **Listo para la nube** — deploy a Render.com en un solo comando
 
-También puedes deshacer una migración ejecutando
+---
 
-```sh
-$ pipenv run downgrade
+## Cómo empezar
+
+### Requisitos previos
+
+- Python 3.10+
+- Node.js 20+
+- PostgreSQL (o SQLite para desarrollo local)
+- Pipenv
+
+### Backend
+
+```bash
+# 1. Instalar dependencias de Python
+pipenv install
+
+# 2. Crear el archivo de entorno
+cp .env.example .env
+# → Edita .env y configura DATABASE_URL y las demás variables
+
+# 3. Ejecutar migraciones
+pipenv run migrate
+pipenv run upgrade
+
+# 4. Iniciar el backend
+pipenv run start
 ```
 
-### Población de la tabla de usuarios en el backend
+### Frontend
 
-Para insertar usuarios de prueba en la base de datos, ejecuta el siguiente comando:
+```bash
+# 1. Instalar dependencias de Node
+npm install
 
-```sh
-$ flask insert-test-users 5
+# 2. Iniciar el servidor de desarrollo
+npm run start
 ```
 
-Y verás el siguiente mensaje:
+La app estará disponible en `http://localhost:3000` (frontend) y `http://localhost:3001` (API).
+
+---
+
+## Variables de entorno
+
+| Variable | Descripción |
+|---|---|
+| `DATABASE_URL` | Cadena de conexión a PostgreSQL |
+| `FLASK_APP_KEY` | Clave secreta para las sesiones de Flask |
+| `CLOUDINARY_URL` | Credenciales de Cloudinary para subida de archivos |
+
+Consulta `.env.example` para ver la lista completa.
+
+---
+
+## Base de datos — referencia rápida
+
+| Motor | Formato de `DATABASE_URL` |
+|---|---|
+| SQLite | `sqlite:////test.db` |
+| MySQL | `mysql://usuario:contraseña@localhost:puerto/db` |
+| PostgreSQL | `postgres://usuario:contraseña@localhost:5432/db` |
+
+Para cargar usuarios de prueba:
+```bash
+flask insert-test-users 5
+```
+
+---
+
+## Deploy
+
+El proyecto está listo para Render.com. Sigue la [guía de deploy de 4Geeks](https://4geeks.com/docs/start/deploy-to-render-com) o usa el `render.yaml` y el `Dockerfile.render` incluidos.
+
+---
+
+## Equipo
+
+Proyecto final desarrollado en [4Geeks Academy](https://4geeksacademy.com) 🎓
+
+| Nombre | Contribuciones |
+|---|---|
+| **Denn** | Modelo de base de datos · Lógica Pomodoro · Formularios de auth · Welcome page |
+| **Juan** | *(rutas API / backend)* |
+| **Messen** | *(componentes frontend / UI)* |
+
+---
+
+## Estructura del proyecto
 
 ```
-    Creating test users
-    test_user1@test.com created.
-    test_user2@test.com created.
-    test_user3@test.com created.
-    test_user4@test.com created.
-    test_user5@test.com created.
-    Users created successfully!
+pomify/
+├── src/
+│   ├── api/          # Rutas Flask, modelos, comandos
+│   └── front/        # Componentes React, vistas, estilos
+├── migrations/       # Migraciones de base de datos (Alembic)
+├── public/           # Archivos estáticos
+├── .env.example
+├── Pipfile
+├── package.json
+└── render.yaml
 ```
 
-### **Nota importante para la base de datos y los datos dentro de ella**
+---
 
-Cada entorno de Github Codespace tendrá **su propia base de datos**, por lo que si estás trabajando con más personas, cada uno tendrá una base de datos diferente y diferentes registros dentro de ella. Estos datos **se perderán**, así que no pases demasiado tiempo creando registros manualmente para pruebas, en su lugar, puedes automatizar la adición de registros a tu base de datos editando el archivo ```commands.py``` dentro de la carpeta ```/src/api```. Edita la línea 32 de la función ```insert_test_data``` para insertar los datos según tu modelo (usa la función ```insert_test_users``` anterior como ejemplo). Luego, todo lo que necesitas hacer es ejecutar ```pipenv run insert-test-data```.
+## Licencia
 
-### Instalación manual del Front-End:
+ISC — libre para hacer fork y adaptar.
 
--   Asegúrate de estar usando la versión 20 de node y de que ya hayas instalado y ejecutado correctamente el backend.
+---
 
-1. Instala los paquetes: `$ npm install`
-2. ¡Empieza a codificar! inicia el servidor de desarrollo de webpack `$ npm run start`
-
-## ¡Publica tu sitio web!
-
-Esta plantilla está 100% lista para desplegarse con Render.com y Heroku en cuestión de minutos. Por favor, lee la [documentación oficial al respecto](https://4geeks.com/docs/start/deploy-to-render-com).
-
-### Contribuyentes
-
-Esta plantilla fue construida como parte del [Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) de 4Geeks Academy por [Alejandro Sanchez](https://twitter.com/alesanchezr) y muchos otros contribuyentes. Descubre más sobre nuestro [Curso de Desarrollador Full Stack](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer) y [Bootcamp de Ciencia de Datos](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning).
-
-Puedes encontrar otras plantillas y recursos como este en la [página de github de la escuela](https://github.com/4geeksacademy/).
+*Hecho con 🍅 y demasiado café por Juan, Messen y Denn.*
