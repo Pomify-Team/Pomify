@@ -18,38 +18,69 @@ export const WelcomePage = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
 
   const pomodoroModes = [
-    { label: "20/5", title: t("welcome.lightFocusTitle"), desc: t("welcome.lightFocusDesc"), bg: "#E2E8DF" },
-    { label: "30/10", title: t("welcome.deepWorkTitle"), desc: t("welcome.deepWorkDesc"), bg: "#D8E0D4" },
-    { label: "60/15", title: t("welcome.ultraFocusTitle"), desc: t("welcome.ultraFocusDesc"), bg: "#CED8C9" },
+    {
+      label: "20/5",
+      title: t("welcome.lightFocusTitle"),
+      desc: t("welcome.lightFocusDesc"),
+      bg: "#E2E8DF",
+    },
+    {
+      label: "30/10",
+      title: t("welcome.deepWorkTitle"),
+      desc: t("welcome.deepWorkDesc"),
+      bg: "#D8E0D4",
+    },
+    {
+      label: "60/15",
+      title: t("welcome.ultraFocusTitle"),
+      desc: t("welcome.ultraFocusDesc"),
+      bg: "#CED8C9",
+    },
   ];
 
   return (
     <>
       <div className="welcome-container">
-
         <header className="welcome-topbar" id="welcome-top">
-          <div className="welcome-topbar-spacer" />
-          <img src={pomifyLogo} alt="Pomify" style={{ height: "32px", width: "auto" }} />
-          <div className="lang-dropdown-container" style={{ position: "relative" }}
+          <img
+            src={pomifyLogo}
+            alt="Pomify"
+            style={{ height: "32px", width: "auto" }}
+          />
+          <div style={{ flex: 1 }} />
+          <div
+            className="lang-dropdown-container"
+            style={{ position: "relative" }}
             onMouseLeave={() => setIsLangOpen(false)}
           >
-            <button className="lang-btn" onClick={() => setIsLangOpen(!isLangOpen)}>
-              <span className="lang-label">{language === "en" ? "English" : "Español"}</span>
+            <button
+              className="lang-btn"
+              onClick={() => setIsLangOpen(!isLangOpen)}
+            >
+              <span className="lang-label">
+                {language === "en" ? "🇺🇸" : "🇪🇸"}
+              </span>
               <span className="lang-arrow">▾</span>
             </button>
             {isLangOpen && (
               <div className="lang-menu">
                 <button
                   className={`lang-option${language === "en" ? " active" : ""}`}
-                  onClick={() => { changeLanguage("en"); setIsLangOpen(false); }}
+                  onClick={() => {
+                    changeLanguage("en");
+                    setIsLangOpen(false);
+                  }}
                 >
-                  English
+                  🇺🇸 English
                 </button>
                 <button
                   className={`lang-option${language === "es" ? " active" : ""}`}
-                  onClick={() => { changeLanguage("es"); setIsLangOpen(false); }}
+                  onClick={() => {
+                    changeLanguage("es");
+                    setIsLangOpen(false);
+                  }}
                 >
-                  Español
+                  🇪🇸 Español
                 </button>
               </div>
             )}
@@ -68,8 +99,18 @@ export const WelcomePage = () => {
                   <strong> {t("welcome.tagline")}</strong>
                 </p>
                 <div className="welcome-buttons">
-                  <button className="btn-signup" onClick={() => setShowRegister(true)}>{t("welcome.signUp")}</button>
-                  <button className="btn-login" onClick={() => setShowLogin(true)}>{t("welcome.login")}</button>
+                  <button
+                    className="btn-signup"
+                    onClick={() => setShowRegister(true)}
+                  >
+                    {t("welcome.signUp")}
+                  </button>
+                  <button
+                    className="btn-login"
+                    onClick={() => setShowLogin(true)}
+                  >
+                    {t("welcome.login")}
+                  </button>
                 </div>
               </div>
             </div>
@@ -77,7 +118,6 @@ export const WelcomePage = () => {
         </section>
 
         <div className="welcome-sections">
-
           <section className="wcard">
             <div className="wcard-split">
               <div className="wcard-text">
@@ -86,7 +126,11 @@ export const WelcomePage = () => {
               </div>
               <div className="wcard-visual wcard-visual--stack">
                 {pomodoroModes.map((mode, i) => (
-                  <div key={mode.label} className="pmode-card" style={{ background: mode.bg, zIndex: i + 1 }}>
+                  <div
+                    key={mode.label}
+                    className="pmode-card"
+                    style={{ background: mode.bg, zIndex: i + 1 }}
+                  >
                     <span className="pmode-label">{mode.label}</span>
                     <h3 className="pmode-title">{mode.title}</h3>
                     <p className="pmode-desc">{mode.desc}</p>
@@ -108,8 +152,31 @@ export const WelcomePage = () => {
                     color="#2D3A4A"
                     size={2}
                     items={[
-                      <span key="1" style={{ fontSize: 9, color: "#6B7280", padding: 4 }}>Notes</span>,
-                    <span key="2" style={{ fontSize: 9, color: "#7f8592", padding: 4,    display: "block",width: "100%",textAlign: "right" }}>Ideas</span>,                      <span key="3" style={{ fontSize: 9, color: "#6B7280", padding: 4 }}>Important</span>,
+                      <span
+                        key="1"
+                        style={{ fontSize: 9, color: "#6B7280", padding: 4 }}
+                      >
+                        Notes
+                      </span>,
+                      <span
+                        key="2"
+                        style={{
+                          fontSize: 9,
+                          color: "#7f8592",
+                          padding: 4,
+                          display: "block",
+                          width: "100%",
+                          textAlign: "right",
+                        }}
+                      >
+                        Ideas
+                      </span>,
+                      <span
+                        key="3"
+                        style={{ fontSize: 9, color: "#6B7280", padding: 4 }}
+                      >
+                        Important
+                      </span>,
                     ]}
                   />
                 </div>
@@ -142,35 +209,43 @@ export const WelcomePage = () => {
               </div>
             </div>
           </section>
-
         </div>
 
         <section className="welcome-cta">
-          <button className="btn-cta" onClick={scrollToTop}>{t("welcome.cta")}</button>
+          <button className="btn-cta" onClick={scrollToTop}>
+            {t("welcome.cta")}
+          </button>
         </section>
 
         <footer className="welcome-footer">
           <span>{t("common.copyright")}</span>
           <span>Juan · Messen · Denn</span>
         </footer>
-
       </div>
 
-      {showRegister && createPortal(
-        <RegisterModal
-          onClose={() => setShowRegister(false)}
-          onSwitchToLogin={() => { setShowRegister(false); setShowLogin(true); }}
-        />,
-        document.body
-      )}
+      {showRegister &&
+        createPortal(
+          <RegisterModal
+            onClose={() => setShowRegister(false)}
+            onSwitchToLogin={() => {
+              setShowRegister(false);
+              setShowLogin(true);
+            }}
+          />,
+          document.body,
+        )}
 
-      {showLogin && createPortal(
-        <LoginModal
-          onClose={() => setShowLogin(false)}
-          onSwitchToRegister={() => { setShowLogin(false); setShowRegister(true); }}
-        />,
-        document.body
-      )}
+      {showLogin &&
+        createPortal(
+          <LoginModal
+            onClose={() => setShowLogin(false)}
+            onSwitchToRegister={() => {
+              setShowLogin(false);
+              setShowRegister(true);
+            }}
+          />,
+          document.body,
+        )}
     </>
   );
 };
