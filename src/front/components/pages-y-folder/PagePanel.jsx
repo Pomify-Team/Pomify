@@ -2,6 +2,10 @@ import { useRef, useState, useCallback } from 'react';
 import { motion, useInView } from 'motion/react';
 import './PagePanel.css';
 import useLanguage from '../../context/LanguageContext';
+import RichTextEditor from '../RichTextEditor';
+
+const stripHtml = (html) => html?.replace(/<[^>]*>/g, '') || '';
+const isHtmlEmpty = (html) => !html || stripHtml(html).trim() === '';
 
 const AnimatedItem = ({ children, delay = 0, index, onMouseEnter, onClick }) => {
   const ref = useRef(null);
@@ -57,8 +61,8 @@ const PagePanel = ({
   }, []);
 
   const handleSubmitCreate = () => {
-    if (!newTitle.trim() || !newContent.trim()) return;
-    onSubmitCreate(newTitle.trim(), newContent.trim());
+    if (!newTitle.trim() || isHtmlEmpty(newContent)) return;
+    onSubmitCreate(newTitle.trim(), newContent);
     setNewTitle('');
     setNewContent('');
   };
@@ -77,8 +81,8 @@ const PagePanel = ({
   };
 
   const handleSubmitEdit = () => {
-    if (!editTitle.trim() || !editContent.trim()) return;
-    onUpdatePage(editingPage.id, editTitle.trim(), editContent.trim());
+    if (!editTitle.trim() || isHtmlEmpty(editContent)) return;
+    onUpdatePage(editingPage.id, editTitle.trim(), editContent);
     setEditingPage(null);
   };
 
@@ -95,20 +99,19 @@ const PagePanel = ({
         <button className="page-create-close" onClick={handleCancelEdit}>✕</button>
       </div>
       <div className="page-create-body">
-        <label className="page-create-label">{t("pages.titleLabel")}</label>
-        <input
-          className="page-create-input"
-          placeholder={t("pages.pageTitlePlaceholder")}
-          value={editTitle}
-          onChange={e => setEditTitle(e.target.value)}
-          autoFocus
-        />
-        <label className="page-create-label">{t("pages.contentLabel")}</label>
-        <textarea
-          className="page-create-textarea"
+        <RichTextEditor
+          content={editContent}
+          onChange={setEditContent}
           placeholder={t("pages.writeNotesPlaceholder")}
-          value={editContent}
-          onChange={e => setEditContent(e.target.value)}
+          titleSlot={
+            <input
+              className="page-create-input"
+              placeholder={t("pages.pageTitlePlaceholder")}
+              value={editTitle}
+              onChange={e => setEditTitle(e.target.value)}
+              autoFocus
+            />
+          }
         />
       </div>
       <div className="page-create-footer">
@@ -125,20 +128,19 @@ const PagePanel = ({
         <button className="page-create-close" onClick={handleCancelCreate}>✕</button>
       </div>
       <div className="page-create-body">
-        <label className="page-create-label">{t("pages.titleLabel")}</label>
-        <input
-          className="page-create-input"
-          placeholder={t("pages.pageTitlePlaceholder")}
-          value={newTitle}
-          onChange={e => setNewTitle(e.target.value)}
-          autoFocus
-        />
-        <label className="page-create-label">{t("pages.contentLabel")}</label>
-        <textarea
-          className="page-create-textarea"
+        <RichTextEditor
+          content={newContent}
+          onChange={setNewContent}
           placeholder={t("pages.writeNotesPlaceholder")}
-          value={newContent}
-          onChange={e => setNewContent(e.target.value)}
+          titleSlot={
+            <input
+              className="page-create-input"
+              placeholder={t("pages.pageTitlePlaceholder")}
+              value={newTitle}
+              onChange={e => setNewTitle(e.target.value)}
+              autoFocus
+            />
+          }
         />
       </div>
       <div className="page-create-footer">
@@ -189,7 +191,7 @@ const PagePanel = ({
           >
             <div className={`page-animated-item ${selectedIndex === index ? 'selected' : ''}`}>
               <p className="item-title">{page.title}</p>
-              <p className="item-preview">{page.content}</p>
+              <p className="item-preview">{stripHtml(page.content).slice(0, 80)}</p>
               <div className="item-actions" onClick={e => e.stopPropagation()}>
                 <button className="item-act-btn edit" onClick={(e) => handleStartEdit(page, e)} title="Edit page">✏️</button>
                 <button className="item-act-btn move" onClick={() => onMovePage(page)} title="Move to folder">📂</button>

@@ -1,6 +1,6 @@
 
 .home-wrapper {
-    background: #E8EDE6;
+    background: var(--color-bg);
     font-family: 'Inter', 'DM Sans', sans-serif;
     height: 100%;
     overflow: hidden;
@@ -23,7 +23,7 @@
 
 .home-divider {
     width: 1px;
-    background: #B0BBA8;
+    background: var(--color-divider);
     align-self: stretch;
     margin: 2rem 0;
 }

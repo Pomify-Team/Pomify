@@ -4,6 +4,10 @@ import { getFolders, createFolder } from "./pages-y-folder/FolderServices";
 import { getPages, createPage } from "./pages-y-folder/PageServices";
 import "../styles/pagesZone.css";
 import useLanguage from "../context/LanguageContext";
+import RichTextEditor from "./RichTextEditor";
+
+const stripHtml = (html) => html?.replace(/<[^>]*>/g, "") || "";
+const isHtmlEmpty = (html) => !html || stripHtml(html).trim() === "";
 
 export const PagesZone = () => {
     const { t } = useLanguage();
@@ -126,7 +130,7 @@ export const PagesZone = () => {
 
     const handleNewPage = () => {
         setShowDropdown(false);
-        if (title.trim() || content.trim()) {
+        if (title.trim() || !isHtmlEmpty(content)) {
             setShowNewPageModal(true);
         } else {
             clearEditor();
@@ -198,19 +202,21 @@ export const PagesZone = () => {
                 </div>
             </div>
 
-            <input
-                className="pz-input-title"
-                placeholder={t("pages.titlePlaceholder")}
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-            />
-
-            <textarea
-                className="pz-textarea"
-                placeholder={t("pages.contentPlaceholder")}
-                value={content}
-                onChange={e => setContent(e.target.value)}
-            />
+            <div className="pz-editor-flex">
+                <RichTextEditor
+                    content={content}
+                    onChange={setContent}
+                    placeholder={t("pages.contentPlaceholder")}
+                    titleSlot={
+                        <input
+                            className="pz-input-title"
+                            placeholder={t("pages.titlePlaceholder")}
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
+                        />
+                    }
+                />
+            </div>
 
             {error && <p className="pz-error">{error}</p>}
 
@@ -301,7 +307,7 @@ export const PagesZone = () => {
                                                         onClick={() => handleSelectLoadPage(page)}
                                                     >
                                                         <span className="pz-page-item-title">{page.title}</span>
-                                                        <span className="pz-page-item-preview">{page.content?.slice(0, 50)}...</span>
+                                                        <span className="pz-page-item-preview">{stripHtml(page.content)?.slice(0, 50)}...</span>
                                                     </button>
                                                 ))}
                                             </div>

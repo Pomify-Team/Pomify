@@ -1,0 +1,228 @@
+.rte-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Toggle button ── */
+.rte-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.rte-toolbar-toggle {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1.5px solid var(--color-divider);
+  background: transparent;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+.rte-toolbar-toggle:hover,
+.rte-toolbar--open .rte-toolbar-toggle {
+  border-color: var(--color-navy);
+  color: var(--color-navy);
+}
+
+.rte-toggle-label {
+  line-height: 1;
+}
+
+.rte-toggle-arrow {
+  font-size: 0.7rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+.rte-toggle-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* ── Toolbar items panel ── */
+.rte-toolbar-items {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--color-surface);
+  border-radius: 12px;
+  border: 1px solid rgba(176, 187, 168, 0.6);
+}
+
+.rte-toolbar--open .rte-toolbar-items {
+  display: flex;
+}
+
+/* ── Buttons ── */
+.rte-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  transition: background 0.12s;
+  padding: 0 5px;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+}
+
+.rte-btn:hover:not(:disabled) {
+  background: rgba(45, 58, 74, 0.08);
+}
+
+.rte-btn.active {
+  background: rgba(45, 58, 74, 0.12);
+  color: var(--color-navy);
+  font-weight: 600;
+}
+
+.rte-btn.disabled,
+.rte-btn:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+/* ── Selects ── */
+.rte-select {
+  height: 28px;
+  border: 1px solid rgba(176, 187, 168, 0.8);
+  border-radius: 7px;
+  background: transparent;
+  font-size: 0.76rem;
+  padding: 0 6px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  outline: none;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  transition: border-color 0.15s;
+}
+.rte-select:focus {
+  border-color: var(--color-navy);
+}
+
+.rte-select--sm {
+  width: 50px;
+}
+
+/* ── Divider ── */
+.rte-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--color-divider);
+  margin: 0 5px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* ── Color button ── */
+.rte-color-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: background 0.12s;
+}
+.rte-color-btn:hover {
+  background: rgba(45, 58, 74, 0.08);
+}
+
+.rte-color-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text-primary);
+  font-family: 'Inter', 'DM Sans', sans-serif;
+}
+
+.rte-color-bar {
+  width: 13px;
+  height: 2.5px;
+  border-radius: 2px;
+  transition: background 0.1s;
+}
+
+/* ── Editor area ── */
+.rte-editor-area {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ── ProseMirror content ── */
+.ProseMirror.rte-content {
+  outline: none;
+  padding: 4px 0;
+  font-size: clamp(0.88rem, 1.1vw, 1rem);
+  line-height: 1.75;
+  color: var(--color-text-primary);
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  min-height: 120px;
+}
+
+.ProseMirror.rte-content p.is-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-placeholder);
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror.rte-content > * + * { margin-top: 0.4em; }
+.ProseMirror.rte-content p { margin: 0; }
+
+.ProseMirror.rte-content ul,
+.ProseMirror.rte-content ol {
+  padding-left: 1.5em;
+}
+
+.ProseMirror.rte-content h1 {
+  font-size: 1.75em;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.ProseMirror.rte-content h2 {
+  font-size: 1.35em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.ProseMirror.rte-content h3 {
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.ProseMirror.rte-content mark {
+  border-radius: 2px;
+  padding: 0 1px;
+}

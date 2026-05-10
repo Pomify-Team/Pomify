@@ -17,11 +17,10 @@ const Main = () => {
     return (
         <React.StrictMode>
             <LanguageProvider>
-                <StoreProvider>
-                    <RouterProvider router={router}>
-                    </RouterProvider>
-                </StoreProvider>
-            </LanguageProvider>
+                    <StoreProvider>
+                        <RouterProvider router={router} />
+                    </StoreProvider>
+                </LanguageProvider>
         </React.StrictMode>
     );
 }
