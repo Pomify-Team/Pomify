@@ -60,6 +60,7 @@ export const es = {
     weak: "Débil",
     fair: "Regular",
     strong: "Fuerte",
+    loginWithGoogle: "Continuar con Google",
   },
   welcome: {
     description: "combina un temporizador Pomodoro, planificación de tareas y música de concentración para mantenerte en el flujo —",

@@ -1,11 +1,24 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint, redirect
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from api.models import db, User
+from authlib.integrations.flask_client import OAuth
 import secrets
 import resend
 import os
 
 user_routes_bp = Blueprint('user_routes_bp', __name__)
+
+oauth = OAuth()
+
+def init_oauth(app):
+    oauth.init_app(app)
+    oauth.register(
+        name='google',
+        client_id=os.getenv("GOOGLE_CLIENT_ID"),
+        client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+        server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+        client_kwargs={'scope': 'openid email profile'}
+    )
 
 #LOGIN:
 @user_routes_bp.route('/login', methods=['POST'])
@@ -55,6 +68,35 @@ def register():
 
     return jsonify({"message": "User registered successfully"}), 201
 
+# GOOGLE OAUTH
+@user_routes_bp.route('/auth/google')
+def google_login():
+    redirect_uri = os.getenv("VITE_BACKEND_URL") + "api/user/auth/google/callback"
+    return oauth.google.authorize_redirect(redirect_uri)
+
+@user_routes_bp.route('/auth/google/callback')
+def google_callback():
+    token = oauth.google.authorize_access_token()
+    user_info = token['userinfo']
+    email = user_info['email']
+    name = user_info.get('name', '')
+
+    user = db.session.execute(
+        db.select(User).where(User.email == email)
+    ).scalar_one_or_none()
+
+    is_new = False
+    if not user:
+        is_new = True
+        user = User(name=name, email=email)
+        user.set_password(secrets.token_hex(16))
+        db.session.add(user)
+        db.session.commit()
+
+    access_token = create_access_token(identity=str(user.id))
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    return redirect(f"{frontend_url}/google-callback?token={access_token}&is_new={is_new}")
+
 #OBTENER TODOS LOS USUARIOS
 @user_routes_bp.route('/', methods=['GET'])
 def get_users():
@@ -77,7 +119,6 @@ def get_profile():
 @user_routes_bp.route('/profile', methods=['PUT'])
 @jwt_required()
 def update_user():
-
     current_user_id = get_jwt_identity()
     user = db.session.get(User, int(current_user_id))
 
@@ -88,13 +129,10 @@ def update_user():
 
     if "name" in data:
         user.name = data["name"]
-
     if "email" in data:
         user.email = data["email"]
-
     if "avatar_url" in data:
         user.avatar_url = data["avatar_url"]
-
     if "password" in data:
         user.set_password(data["password"])
 
@@ -106,11 +144,9 @@ def update_user():
     }), 200
 
 #DELETE solo el usuario logeado puede eliminar su perfil.
-
 @user_routes_bp.route('/profile', methods=['DELETE'])
 @jwt_required()
 def delete_user():
-
     current_user_id = get_jwt_identity()
     user = db.session.get(User, int(current_user_id))
 
@@ -122,33 +158,29 @@ def delete_user():
 
     return jsonify({"message": "User deleted successfully"}), 200
 
-
-
-#recuperacion de contraseña
-
+#RECUPERACION DE CONTRASEÑA
 @user_routes_bp.route('/forgot-password', methods=['POST'])
 def forgot_password():
     data = request.get_json()
-    email = data.get('email', '').lower() 
+    email = data.get('email', '').lower()
     if not email:
         return jsonify({"message": "Email is required"}), 400
-    
+
     user = db.session.execute(
         db.select(User).where(User.email == email)
     ).scalar_one_or_none()
 
     if user is None:
         return jsonify({"message": "User not found"}), 404
-    
+
     token = create_access_token(identity=str(user.id))
     user.reset_token = token
     db.session.commit()
 
-
     resend.api_key = os.getenv("RESEND_API_KEY")
-    
+
     resend.Emails.send({
-        "from": "onboarding@resend.dev", 
+        "from": "noreply@pomify.es",
         "to": [email],
         "subject": "Reset your password - Pomify",
         "html": f"""
@@ -161,7 +193,6 @@ def forgot_password():
     })
 
     return jsonify({"message": "Password reset email sent"}), 200
-    
 
 @user_routes_bp.route('/reset-password', methods=['POST'])
 def reset_password():
@@ -179,20 +210,8 @@ def reset_password():
     if user is None:
         return jsonify({"message": "Invalid or expired token"}), 404
 
-    user.set_password(new_password)  
-    user.reset_token = None         
+    user.set_password(new_password)
+    user.reset_token = None
     db.session.commit()
 
     return jsonify({"message": "Password updated successfully"}), 200
-
-
-
-# codigo de la academia:
-@user_routes_bp.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
-
-    return jsonify(response_body), 200

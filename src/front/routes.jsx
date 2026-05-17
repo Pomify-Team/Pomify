@@ -15,6 +15,7 @@ import FoldersPage from "./components/pages-y-folder/FoldersPage";
 import { SoundList } from "./pages/API-externa/Freesound.jsx";
 import { ProfilePage } from "./pages/ProfilePage";
 import { AboutPage } from "./pages/AboutPage";
+import GoogleCallback from "./pages/GoogleCallback.jsx"
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +23,7 @@ export const router = createBrowserRouter(
       <Route path="/" element={<PublicLayout />}>
         <Route index element={<WelcomePage />} />
         <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="google-callback" element={<GoogleCallback />} />
       </Route>
 
       <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>}>
