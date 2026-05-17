@@ -131,3 +131,18 @@
         margin: 0;
     }
 }
+.welcome-toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: var(--cream);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 4px 20px rgba(29, 53, 87, 0.25);
+}

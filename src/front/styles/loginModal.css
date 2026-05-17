@@ -163,3 +163,28 @@
 .toggle-password:hover {
     color: var(--navy);
 }
+.modal-btn-google {
+    width: 100%;
+    background: transparent;
+    color: var(--navy);
+    border: 1px solid rgba(29, 53, 87, 0.25);
+    border-radius: 8px;
+    padding: 13px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+.modal-btn-google:hover {
+    background: rgba(29, 53, 87, 0.06);
+    border-color: var(--steel);
+    transform: translateY(-2px);
+}

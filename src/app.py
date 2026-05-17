@@ -5,7 +5,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from api.utils import APIException, generate_sitemap
 from api.models import db
-from api.routes.user_routes import user_routes_bp
+from api.routes.user_routes import user_routes_bp, init_oauth
 from api.routes.folder import folders_bp
 from api.routes.page import pages_bp
 from api.routes.goals import goals_bp
@@ -40,6 +40,7 @@ db.init_app(app)
 
 setup_admin(app)
 setup_commands(app)
+init_oauth(app)
 
 app.register_blueprint(user_routes_bp, url_prefix='/api/user')
 app.register_blueprint(folders_bp, url_prefix='/api/folders')
