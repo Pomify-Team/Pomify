@@ -226,3 +226,39 @@
   border-radius: 2px;
   padding: 0 1px;
 }
+
+@media (max-width: 600px) {
+  .rte-toolbar-toggle {
+    font-size: 0.72rem;
+    padding: 4px 10px;
+  }
+
+  .rte-toolbar-items {
+    gap: 1px;
+    padding: 4px 6px;
+  }
+
+  .rte-btn {
+    min-width: 26px;
+    height: 26px;
+    font-size: 0.8rem;
+  }
+
+  .rte-select {
+    height: 26px;
+    font-size: 0.72rem;
+  }
+
+  .rte-select--sm {
+    width: 44px;
+  }
+
+  .rte-divider {
+    margin: 0 3px;
+  }
+
+  .ProseMirror.rte-content {
+    font-size: 0.92rem;
+    min-height: 100px;
+  }
+}

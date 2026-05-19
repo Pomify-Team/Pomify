@@ -115,7 +115,7 @@ export const Navbar = () => {
 
   const renderAvatar = () => {
     if (!user?.avatar_url) return getInitial();
-    if (user.avatar_url.startsWith("http")) {
+    if (user.avatar_url.startsWith("http") || user.avatar_url.startsWith("data:")) {
       return <img src={user.avatar_url} alt="avatar" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />;
     }
     return <span style={{ fontSize: "1.1rem" }}>{user.avatar_url}</span>;
