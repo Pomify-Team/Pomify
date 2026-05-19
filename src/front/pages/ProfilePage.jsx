@@ -68,9 +68,19 @@ const SERVICE_CONFIG = {
     generic:          { logo: null,                                                  bg: "#F5F3EE" },
 };
 
-const getServiceConfig = (service, name) => {
+const getFaviconUrl = (url) => {
+    try {
+        const domain = new URL(url).hostname;
+        return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+    } catch {
+        return null;
+    }
+};
+
+const getServiceConfig = (service, name, url) => {
     const cfg = SERVICE_CONFIG[service] || SERVICE_CONFIG.generic;
-    return { ...cfg, fallbackIcon: name?.[0]?.toUpperCase() ?? "?" };
+    const favicon = cfg.logo ? null : getFaviconUrl(url);
+    return { ...cfg, logo: cfg.logo || favicon, fallbackIcon: name?.[0]?.toUpperCase() ?? "?" };
 };
 
 export const ProfilePage = () => {
@@ -276,15 +286,15 @@ export const ProfilePage = () => {
                 <div className="prof-shortcuts-section">
                     <div className="prof-shortcuts-top">
                         <div>
-                            <h2 className="prof-shortcuts-title">your shortcuts</h2>
-                            <p className="prof-shortcuts-sub">one tap to your most-used class workspaces &amp; calls</p>
+                            <h2 className="prof-shortcuts-title">{t("profile.shortcuts")}</h2>
+                            <p className="prof-shortcuts-sub">{t("profile.shortcutsSub")}</p>
                         </div>
-                        <button className="prof-add-link-btn" onClick={() => setShowAddLinkModal(true)}>+ add link</button>
+                        <button className="prof-add-link-btn" onClick={() => setShowAddLinkModal(true)}>{t("profile.addLink")}</button>
                     </div>
 
                     <div className="prof-shortcuts-grid">
                         {shortcuts.map(s => {
-                            const cfg = getServiceConfig(s.service, s.name);
+                            const cfg = getServiceConfig(s.service, s.name, s.url);
                             return (
                                 <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer"
                                     className="prof-shortcut-card" style={{ background: cfg.bg }}>
@@ -306,7 +316,7 @@ export const ProfilePage = () => {
                             );
                         })}
                         <button className="prof-shortcut-card prof-shortcut-empty" onClick={() => setShowAddLinkModal(true)}>
-                            + add link
+                            {t("profile.addLink")}
                         </button>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import { PomodoroZone } from "../components/PomodoroZone";
 import { PagesZone } from "../components/PagesZone";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import useLanguage from "../context/LanguageContext";
 
 const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 1199);
@@ -19,6 +20,7 @@ export const Home = () => {
     const [showWelcome, setShowWelcome] = useState(false);
     const [mobileTab, setMobileTab] = useState("pomodoro");
     const isMobile = useIsMobile();
+    const { t } = useLanguage();
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -43,13 +45,13 @@ export const Home = () => {
                             className={`home-tab${mobileTab === "pomodoro" ? " home-tab--active" : ""}`}
                             onClick={() => setMobileTab("pomodoro")}
                         >
-                            🍅 Pomodoro
+                            {t("home.pomodoro")}
                         </button>
                         <button
                             className={`home-tab${mobileTab === "pages" ? " home-tab--active" : ""}`}
                             onClick={() => setMobileTab("pages")}
                         >
-                            📄 Pages
+                            {t("home.pages")}
                         </button>
                     </div>
 
