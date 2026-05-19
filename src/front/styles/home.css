@@ -99,36 +99,96 @@
 }
 
 
+/* ── Tabs móvil ── */
+.home-tabs {
+    display: none;
+}
+
+.home-mobile {
+    display: none;
+}
+
+.home-mobile-panel {
+    display: none;
+}
+
+.home-mobile-panel--active {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
 @media (max-width: 1199px) {
-    html, body, #root {
-        overflow: auto;
-    }
-
     .home-wrapper {
-        height: auto;
-        padding-bottom: 2rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding-bottom: 0;
     }
 
-    .home-row {
-        height: auto !important;
+    /* Mostrar tabs y layout móvil */
+    .home-tabs {
+        display: flex;
+        flex-shrink: 0;
+        border-bottom: 2px solid var(--color-divider, #e0e0e0);
+        background: var(--color-bg);
     }
 
-    .home-left {
-        height: auto;
-        overflow: visible;
-        padding: 1.5rem 1.5rem 0.75rem;
-    }
-
-    .home-right {
-        height: auto;
-        overflow: visible;
-        padding: 0.75rem 1.5rem 0;
-        min-height: auto;
-        background: transparent;
+    .home-tab {
+        flex: 1;
+        padding: 0.75rem 1rem;
         border: none;
-        box-shadow: none;
-        border-radius: 0;
-        margin: 0;
+        background: transparent;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--color-text-muted, #888);
+        cursor: pointer;
+        transition: color 0.15s, border-bottom 0.15s;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+    }
+
+    .home-tab--active {
+        color: var(--navy, #1d3557);
+        border-bottom: 3px solid var(--navy, #1d3557);
+        font-weight: 600;
+    }
+
+    .home-mobile {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .home-mobile-panel--active {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .home-mobile-pomodoro {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+        padding: 1.5rem 1rem;
+    }
+
+    .home-mobile-pages {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0.75rem 1rem 1rem;
+        min-height: 0;
     }
 }
 .welcome-toast {

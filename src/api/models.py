@@ -16,7 +16,7 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(nullable=False)
-    avatar_url: Mapped[str] = mapped_column(String(500), unique=True, nullable=True)
+    avatar_url: Mapped[str] = mapped_column(Text, nullable=True)
     reset_token: Mapped[str] = mapped_column(String(500), nullable=True)
 
     def set_password(self, password):
@@ -29,6 +29,9 @@ class User(db.Model):
         back_populates="user", cascade="all, delete-orphan")
 
     goals: Mapped[List["Goals"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan")
+
+    shortcuts: Mapped[List["Shortcut"]] = relationship(
         back_populates="user", cascade="all, delete-orphan")
 
     def serialize(self):
@@ -91,6 +94,26 @@ class Page(db.Model):
             },
             "created_at": self.created_at.isoformat(),
             "update_at": self.update_at.isoformat()
+        }
+
+
+class Shortcut(db.Model):
+    __tablename__ = "shortcut_table"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user_table.id"), nullable=False)
+    user: Mapped["User"] = relationship(back_populates="shortcuts")
+
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    url: Mapped[str] = mapped_column(String(500), nullable=False)
+    service: Mapped[str] = mapped_column(String(50), nullable=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "url": self.url,
+            "service": self.service,
         }
 
 
