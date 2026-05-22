@@ -270,6 +270,13 @@ export const en = {
     yesDelete: "Yes, delete",
     yourName: "Your name...",
     yourEmail: "Your email...",
+    shortcuts: "your shortcuts",
+    shortcutsSub: "one tap to your most-used workspaces & calls",
+    addLink: "+ add link",
+  },
+  home: {
+    pomodoro: "Pomodoro",
+    pages: "Pages",
   },
   footer: {
     team: "Dennielys, Messen & Juan",

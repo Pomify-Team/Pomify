@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint, redirect
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from api.models import db, User
+from api.models import db, User, Shortcut
 from authlib.integrations.flask_client import OAuth
 import secrets
 import resend
@@ -193,6 +193,57 @@ def forgot_password():
     })
 
     return jsonify({"message": "Password reset email sent"}), 200
+
+# SHORTCUTS
+@user_routes_bp.route('/shortcuts', methods=['GET'])
+@jwt_required()
+def get_shortcuts():
+    user_id = get_jwt_identity()
+    shortcuts = db.session.execute(
+        db.select(Shortcut).where(Shortcut.user_id == int(user_id))
+    ).scalars().all()
+    return jsonify([s.serialize() for s in shortcuts]), 200
+
+@user_routes_bp.route('/shortcuts', methods=['POST'])
+@jwt_required()
+def create_shortcut():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    url = data.get('url', '').strip()
+    service = data.get('service', 'generic')
+    if not name or not url:
+        return jsonify({"message": "Name and URL are required"}), 400
+    shortcut = Shortcut(user_id=int(user_id), name=name, url=url, service=service)
+    db.session.add(shortcut)
+    db.session.commit()
+    return jsonify({"shortcut": shortcut.serialize()}), 201
+
+@user_routes_bp.route('/shortcuts/<int:shortcut_id>', methods=['PUT'])
+@jwt_required()
+def update_shortcut(shortcut_id):
+    user_id = get_jwt_identity()
+    shortcut = db.session.get(Shortcut, shortcut_id)
+    if not shortcut or shortcut.user_id != int(user_id):
+        return jsonify({"message": "Not found"}), 404
+    data = request.get_json()
+    if "name" in data: shortcut.name = data["name"].strip()
+    if "url" in data: shortcut.url = data["url"].strip()
+    if "service" in data: shortcut.service = data["service"]
+    db.session.commit()
+    return jsonify({"shortcut": shortcut.serialize()}), 200
+
+@user_routes_bp.route('/shortcuts/<int:shortcut_id>', methods=['DELETE'])
+@jwt_required()
+def delete_shortcut(shortcut_id):
+    user_id = get_jwt_identity()
+    shortcut = db.session.get(Shortcut, shortcut_id)
+    if not shortcut or shortcut.user_id != int(user_id):
+        return jsonify({"message": "Not found"}), 404
+    db.session.delete(shortcut)
+    db.session.commit()
+    return jsonify({"message": "Deleted"}), 200
+
 
 @user_routes_bp.route('/reset-password', methods=['POST'])
 def reset_password():
