@@ -1,4 +1,4 @@
-const backend_url = import.meta.env.VITE_BACKEND_URL;
+const backend_url = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
 
 export const getShortcuts = async () => {
   const res = await fetch(`${backend_url}/api/user/shortcuts`, {

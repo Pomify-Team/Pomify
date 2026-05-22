@@ -7,7 +7,7 @@ import { getGoals, updateGoal, deleteGoal, createGoal } from "./goals/GoalsServi
 import pomifyLogo from "../assets/img/pomify_logo.png";
 import useLanguage from "../context/LanguageContext";
 
-const backend_url = import.meta.env.VITE_BACKEND_URL;
+const backend_url = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
 
 export const Navbar = () => {
   const location = useLocation();
