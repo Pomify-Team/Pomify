@@ -152,9 +152,9 @@ export const PomodoroZone = () => {
                     <h2
                         className="pomodoro-time"
                         data-phase={p.currentPhase}
-                        data-format={hasHours(p.focusLeft) ? "hms" : "ms"}
+                        data-format={hasHours(p.phaseLeft) ? "hms" : "ms"}
                     >
-                        {formatTotal(p.focusLeft)}
+                        {formatTotal(p.phaseLeft)}
                     </h2>
                     <p className="pomodoro-phase">{phaseLabel}</p>
 
