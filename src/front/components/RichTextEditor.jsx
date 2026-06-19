@@ -8,6 +8,7 @@ import { Highlight } from "@tiptap/extension-highlight";
 import { Extension } from "@tiptap/core";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useEffect, useRef, useState } from "react";
+import "./RichTextEditor.css";
 
 const EnterAsLineBreak = Extension.create({
     name: "enterAsLineBreak",
@@ -22,7 +23,6 @@ const EnterAsLineBreak = Extension.create({
         };
     },
 });
-import "./RichTextEditor.css";
 
 const FONT_SIZES = ["12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px"];
 
@@ -46,7 +46,7 @@ export default function RichTextEditor({ content, onChange, placeholder, titleSl
 
     const editor = useEditor({
         extensions: [
-            StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+            StarterKit.configure({ heading: { levels: [1, 2, 3] }, underline: false }),
             Underline,
             TextStyle,
             FontSize,

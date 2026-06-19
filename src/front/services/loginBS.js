@@ -1,5 +1,7 @@
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
+
 export const loginUser = async (user) => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/login`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/login`, {
         method: "POST",
         body: JSON.stringify(user),
         headers: { "Content-Type": "application/json" },
@@ -12,7 +14,7 @@ export const loginUser = async (user) => {
 export const getProfile = async () => {
     const token = localStorage.getItem("token");
     if (!token) return null;
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -24,7 +26,7 @@ export const getProfile = async () => {
 };
 
 export const forgotPassword = async (email) => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/forgot-password`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.toLowerCase() }),
@@ -35,7 +37,7 @@ export const forgotPassword = async (email) => {
 };
 
 export const resetPassword = async (token, password) => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/reset-password`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),

@@ -5,7 +5,7 @@ import useLanguage from "../context/LanguageContext";
 import { getShortcuts, createShortcut, updateShortcut, deleteShortcut } from "../components/ShortcutsService";
 import pomifyLogo from "../assets/img/pomify_logo.png";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
 
 const AVATARS = ["🐱", "🐻", "🐰", "🐥", "🐼", "😎"];
 

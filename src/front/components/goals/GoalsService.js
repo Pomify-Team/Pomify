@@ -1,4 +1,4 @@
-const backend_url = import.meta.env.VITE_BACKEND_URL; // ej: http://localhost:3001
+const backend_url = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
 
 
 export const getGoals = async () => {

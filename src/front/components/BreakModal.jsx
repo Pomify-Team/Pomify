@@ -20,11 +20,7 @@ export const BreakModal = ({ timeLeft, presetBreak, onSkip, onBreakEnd }) => {
     });
     const [showConfirm, setShowConfirm] = useState(false);
 
-    useEffect(() => {
-        if (timeLeft === 0) {
-            onBreakEnd();
-        }
-    }, [timeLeft, onBreakEnd]);
+
 
     return (
         <div className="bm-overlay">

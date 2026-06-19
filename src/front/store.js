@@ -82,6 +82,7 @@ export default function storeReducer(store, action = {}) {
                             completedFocusSessions: next,
                             showBreakModal: true,
                             breakSkipped: false,
+                            isRunning: true,
                         },
                     };
                 }
@@ -102,6 +103,7 @@ export default function storeReducer(store, action = {}) {
                     phaseLeft: p.selectedPreset.focus,
                     showBreakModal: false,
                     breakSkipped: false,
+                    isRunning: false,
                 },
             };
         }

@@ -1,5 +1,7 @@
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
+
 export const registerUser = async (user) => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/register`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/register`, {
         method: "POST",
         body: JSON.stringify(user),
         headers: {
@@ -12,4 +14,3 @@ export const registerUser = async (user) => {
     }
     return data;
 };
-
