@@ -1,16 +1,5 @@
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/$/, "");
+import { apiClient } from "./apiClient";
 
 export const registerUser = async (user) => {
-    const response = await fetch(`${BACKEND_URL}/api/user/register`, {
-        method: "POST",
-        body: JSON.stringify(user),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message);
-    }
-    return data;
+    return apiClient("/api/user/register", { method: "POST", body: user });
 };

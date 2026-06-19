@@ -6,6 +6,9 @@ import { router } from "./routes";  // Import the router configuration
 import { StoreProvider } from './hooks/useGlobalReducer';  // Import the StoreProvider for global state management
 import { BackendURL } from './components/BackendURL';
 import { LanguageProvider } from './context/LanguageContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const Main = () => {
 
@@ -16,11 +19,13 @@ const Main = () => {
         );
     return (
         <React.StrictMode>
-            <LanguageProvider>
+            <QueryClientProvider client={queryClient}>
+                <LanguageProvider>
                     <StoreProvider>
                         <RouterProvider router={router} />
                     </StoreProvider>
                 </LanguageProvider>
+            </QueryClientProvider>
         </React.StrictMode>
     );
 }

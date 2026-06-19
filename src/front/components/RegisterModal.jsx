@@ -37,7 +37,7 @@ export const RegisterModal = ({ onClose, onSwitchToLogin }) => {
     const navigate = useNavigate();
 
     const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_BACKEND_URL}api/user/auth/google`;
+    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/user/auth/google`;
     };
 
     const strength = getStrength(user.password);
