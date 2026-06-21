@@ -71,7 +71,7 @@ def register():
 # GOOGLE OAUTH
 @user_routes_bp.route('/auth/google')
 def google_login():
-    redirect_uri = os.getenv("VITE_BACKEND_URL") + "api/user/auth/google/callback"
+    redirect_uri = os.getenv("VITE_BACKEND_URL") + "/api/user/auth/google/callback"
     return oauth.google.authorize_redirect(redirect_uri)
 
 @user_routes_bp.route('/auth/google/callback')
