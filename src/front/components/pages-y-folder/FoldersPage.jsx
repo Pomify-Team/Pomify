@@ -111,11 +111,6 @@ const FoldersPage = () => {
                     <div className={`fp-sidebar ${showMobileMain ? 'd-none d-md-flex' : 'd-flex'}`}>
                         <div className="fp-sidebar-header">
                             <div className="d-flex align-items-center gap-2">
-                                <button
-                                    className="fp-btn-cancel"
-                                    onClick={() => navigate("/home")}
-                                    style={{ padding: '6px 12px', fontSize: '12px' }}
-                                >{t("common.home")}</button>
                                 <span className="fp-sidebar-title">{t("folders.title")}</span>
                             </div>
                             <div className="fp-sidebar-btns">

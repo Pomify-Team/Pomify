@@ -86,12 +86,6 @@ export const SoundList = () => {
 
   return (
     <>
-      <div className="sound-btn-home-wrapper">
-        <button className="sound-btn-home" onClick={() => navigate("/home")}>
-          ← Home
-        </button>
-      </div>
-
       <div className="sound-hero">
         <h1 className="sound-hero-title">Ambient Sounds</h1>
         <p className="sound-hero-subtitle">
