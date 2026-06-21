@@ -132,7 +132,7 @@ export const Navbar = () => {
       <nav className="navbar-container">
         <div className="navbar-content">
 
-          <div className="navbar-left" onClick={() => navigate("/about")} style={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
+          <div className="navbar-left" onClick={() => navigate("/home")} style={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
             <img src={pomifyLogo} alt="Pomify" style={{ height: "32px", width: "auto" }} />
           </div>
 
