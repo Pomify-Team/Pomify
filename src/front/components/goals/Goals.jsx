@@ -143,21 +143,6 @@ export const Goals = () => {
 
   return (
     <div className="goals-page">
-      <button
-        onClick={() => navigate("/home")}
-        style={{
-          margin: "0 0 1rem 0",
-          padding: "8px 16px",
-          borderRadius: "8px",
-          border: "1.5px solid var(--color-divider)",
-          background: "transparent",
-          color: "var(--color-text-primary)",
-          cursor: "pointer",
-          fontSize: "0.9rem"
-        }}
-      >
-        {t("common.home")}
-      </button>
 
       <h1 className="goals-title">{t("goals.yourGoals")}</h1>
       <p className="goals-subtitle">{t("goals.subtitle")}</p>
