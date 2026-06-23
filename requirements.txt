@@ -42,3 +42,4 @@ urllib3==2.7.0
 Werkzeug==3.1.8
 WTForms==3.1.2
 authlib 
+sentry-sdk
