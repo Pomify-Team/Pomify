@@ -40,23 +40,25 @@ const persistingReducer = (store, action) => {
 const playBreakAlarm = () => {
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const notes = [523.25, 659.25, 783.99];
-        notes.forEach((freq, i) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = "sine";
-            osc.frequency.value = freq;
-            const start = ctx.currentTime + i * 0.38;
-            const end = start + 0.32;
-            gain.gain.setValueAtTime(0, start);
-            gain.gain.linearRampToValueAtTime(0.6, start + 0.04);
-            gain.gain.linearRampToValueAtTime(0, end);
-            osc.start(start);
-            osc.stop(end + 0.05);
+        ctx.resume().then(() => {
+            const notes = [523.25, 659.25, 783.99];
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = "sine";
+                osc.frequency.value = freq;
+                const start = ctx.currentTime + i * 0.38;
+                const end = start + 0.32;
+                gain.gain.setValueAtTime(0, start);
+                gain.gain.linearRampToValueAtTime(0.6, start + 0.04);
+                gain.gain.linearRampToValueAtTime(0, end);
+                osc.start(start);
+                osc.stop(end + 0.05);
+            });
+            setTimeout(() => ctx.close(), 2000);
         });
-        setTimeout(() => ctx.close(), 2000);
     } catch {}
 };
 
