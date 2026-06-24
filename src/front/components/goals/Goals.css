@@ -1,286 +1,287 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
+/* ── Goals · Kanban (from Claude Design) ──────────────────────────────── */
 .goals-page {
-  --goal-urgent: #e63946;
-  --goal-progress: #457b9d;
-  --goal-done: #5b9e6f;
+  /* status accents from the design (navy/sage/surface/divider come from index.css) */
+  --g-urgent: #C7693E;
+  --g-progress: #3B6FA6;
+  --g-done: #5A8A5A;
+  --g-muted: #7c8a7e;
+  --g-line: rgba(45, 58, 74, 0.08);
 
-  max-width: 1080px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 28px 20px 56px;
-  font-family: 'Inter', sans-serif;
-  color: var(--color-text-primary);
-}
-
-/* ── Top bar: title + new goal input + add button (one row) ── */
-.goals-topbar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
+  padding: 40px 32px 64px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--color-navy);
 }
 
 .goals-title {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
+  margin: 0 0 22px;
+  font-size: 1.875rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--color-navy);
 }
 
-.goal-input {
-  flex: 1;
-  min-width: 200px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid var(--color-divider);
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  font-family: inherit;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.15s ease;
-}
-
-.goal-input::placeholder { color: var(--color-text-secondary); }
-.goal-input:focus { border-color: var(--color-navy); }
-
-.btn-add {
-  padding: 12px 22px;
-  border: none;
-  border-radius: 10px;
-  background: var(--color-navy);
-  color: #fff;
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.btn-add:hover { background: var(--color-navy-light); transform: translateY(-1px); }
-.btn-add:active { transform: translateY(0); }
-
-/* ── Stats pills ── */
-.goals-stats {
+/* ── Filter chips (double as the status summary) ── */
+.goals-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 20px 0 24px;
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
-.stat-pill {
+.goal-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: 999px;
+  gap: 9px;
   background: var(--color-surface);
-  border: 1px solid var(--color-divider);
-  font-size: 0.85rem;
+  color: var(--color-navy);
+  border: 1px solid var(--g-line);
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.stat-pill b {
-  color: var(--color-text-primary);
-  font-weight: 700;
-  margin-left: 2px;
+.goal-chip.active {
+  background: var(--color-navy);
+  color: #fff;
+  border-color: var(--color-navy);
 }
 
-.stat-dot {
+.goal-chip-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.stat-pill.urgent .stat-dot { background: var(--goal-urgent); }
-.stat-pill.progress .stat-dot { background: var(--goal-progress); }
-.stat-pill.done .stat-dot { background: var(--goal-done); }
+.goal-chip.urgent .goal-chip-dot { background: var(--g-urgent); }
+.goal-chip.progress .goal-chip-dot { background: var(--g-progress); }
+.goal-chip.done .goal-chip-dot { background: var(--g-done); }
+
+.goal-chip-count { font-weight: 700; opacity: 0.55; }
+.goal-chip.active .goal-chip-count { opacity: 0.9; }
+
+.goal-chip-clear {
+  border: none;
+  background: transparent;
+  color: var(--g-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0 6px;
+}
+
+/* ── Add row ── */
+.goals-add {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.goal-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-surface);
+  border: 1px solid rgba(45, 58, 74, 0.10);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--color-navy);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.goal-input::placeholder { color: var(--g-muted); }
+.goal-input:focus { border-color: var(--color-navy); }
+
+.btn-add {
+  background: var(--color-navy);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 26px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.btn-add:hover { background: var(--color-navy-light); }
 
 /* ── Board ── */
-.goals-board {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  align-items: start;
-}
+.goals-board { margin-bottom: 0; }
 
 .goals-col {
   background: var(--color-surface);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 28px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  min-height: 220px;
+  gap: 12px;
+  transition: opacity 0.2s ease;
 }
 
-.col-head {
+.goals-col.dimmed { opacity: 0.4; }
+
+.goal-col-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 4px 12px;
+  padding: 2px 4px 4px;
 }
 
-.col-title {
-  font-size: 0.78rem;
+.goal-col-title {
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.goals-col.urgent .col-title { color: var(--goal-urgent); }
-.goals-col.progress .col-title { color: var(--goal-progress); }
-.goals-col.done .col-title { color: var(--goal-done); }
+.goals-col.urgent .goal-col-title { color: var(--g-urgent); }
+.goals-col.progress .goal-col-title { color: var(--g-progress); }
+.goals-col.done .goal-col-title { color: var(--g-done); }
 
-.col-count {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  background: var(--color-bg);
+.goal-col-count {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
   border-radius: 999px;
-  padding: 1px 9px;
-}
-
-.col-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  background: rgba(45, 58, 74, 0.06);
+  color: var(--g-muted);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ── Card ── */
 .goal-card {
-  background: var(--color-item-bg);
-  border: 1px solid rgba(176, 187, 168, 0.45);
-  border-radius: 10px;
-  padding: 12px 13px;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(45, 58, 74, 0.04);
-  transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--g-line);
+  border-radius: 8px;
+  padding: 14px 14px 10px;
+  transition: box-shadow 0.15s ease;
 }
 
-.goal-card:hover {
-  box-shadow: 0 4px 14px rgba(45, 58, 74, 0.10);
-  transform: translateY(-1px);
-}
+.goal-card:hover { box-shadow: 0 1px 3px rgba(45, 58, 74, 0.08); }
 
-.goal-card.open { border-color: var(--color-navy); }
-
-.goal-card-title {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--color-text-primary);
+.goal-card-text {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
   word-break: break-word;
 }
 
-.goal-edit-input {
+.goal-card-input {
   width: 100%;
-  padding: 6px 8px;
-  border: 1px solid var(--color-navy);
-  border-radius: 7px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  outline: none;
-}
-
-/* Inline status picker (revealed on card click) */
-.goal-status-options {
-  display: flex;
-  gap: 6px;
-  margin-top: 10px;
-}
-
-.status-btn {
-  flex: 1;
   border: none;
-  border-radius: 999px;
-  padding: 6px 4px;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
   font-family: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
 }
 
-.status-btn.urgent { background: rgba(230, 57, 70, 0.14); color: var(--goal-urgent); }
-.status-btn.urgent.active { background: var(--goal-urgent); color: #fff; }
-.status-btn.progress { background: rgba(69, 123, 157, 0.16); color: var(--goal-progress); }
-.status-btn.progress.active { background: var(--goal-progress); color: #fff; }
-.status-btn.done { background: rgba(91, 158, 111, 0.18); color: var(--goal-done); }
-.status-btn.done.active { background: var(--goal-done); color: #fff; }
-
-/* Card actions: edit + delete */
 .goal-card-actions {
   display: flex;
-  gap: 4px;
+  gap: 14px;
   margin-top: 10px;
+  color: var(--g-muted);
 }
 
 .icon-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border: none;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: color 0.12s ease;
 }
 
-.icon-btn:hover { background: var(--color-hover); color: var(--color-text-primary); }
+.icon-btn:hover { color: var(--color-navy); }
+.icon-btn.danger:hover { color: var(--color-error); }
 
-/* Per-column quick add */
-.col-add-btn {
-  margin-top: 10px;
-  width: 100%;
-  padding: 9px;
-  border: 1px dashed var(--color-divider);
+/* Status menu: absolute popover so opening it never resizes the card (req 6). */
+.status-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid rgba(45, 58, 74, 0.10);
   border-radius: 10px;
-  background: transparent;
-  color: var(--color-text-secondary);
+  box-shadow: 0 10px 28px rgba(45, 58, 74, 0.16);
+}
+
+.status-opt {
+  flex: 1;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 6px;
   font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.status-opt.urgent { background: rgba(199, 105, 62, 0.12); color: var(--g-urgent); }
+.status-opt.urgent.active { background: var(--g-urgent); color: #fff; }
+.status-opt.progress { background: rgba(59, 111, 166, 0.12); color: var(--g-progress); }
+.status-opt.progress.active { background: var(--g-progress); color: #fff; }
+.status-opt.done { background: rgba(90, 138, 90, 0.14); color: var(--g-done); }
+.status-opt.done.active { background: var(--g-done); color: #fff; }
+
+/* ── Per-column quick add ── */
+.col-add-btn {
+  width: 100%;
+  border: 1.5px dashed var(--color-divider);
+  background: transparent;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--g-muted);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
 }
 
 .col-add-btn:hover {
-  border-color: var(--color-navy);
+  background: rgba(45, 58, 74, 0.03);
   color: var(--color-navy);
-  background: var(--color-hover);
 }
 
-.col-add-input {
-  margin-top: 10px;
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--color-navy);
-  border-radius: 10px;
-  background: var(--color-item-bg);
-  color: var(--color-text-primary);
-  font-family: inherit;
-  font-size: 0.9rem;
-  outline: none;
+/* ── Responsive (board stacking handled by Bootstrap col-12 col-md-4) ── */
+@media (max-width: 767.98px) {
+  .goals-page { padding: 28px 16px 48px; }
+  .goals-title { font-size: 1.5rem; margin-bottom: 18px; }
+  .goals-col { border-radius: 20px; }
 }
 
-@media (max-width: 820px) {
-  .goals-page { padding: 20px 16px 40px; }
-
-  .goals-topbar { gap: 10px; }
-  .goals-title { width: 100%; }
-
-  .goals-board { grid-template-columns: 1fr; }
-
-  .goals-col { min-height: auto; }
+@media (max-width: 400px) {
+  .goals-add { flex-wrap: wrap; }
+  .btn-add { width: 100%; }
 }

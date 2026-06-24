@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Goals.css";
 import useLanguage from "../../context/LanguageContext";
 
@@ -13,7 +13,7 @@ const PencilIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
     strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M12 20h9" />
-    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
   </svg>
 );
 
@@ -21,7 +21,7 @@ const TrashIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
     strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M3 6h18" />
-    <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
     <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
   </svg>
 );
@@ -29,227 +29,262 @@ const TrashIcon = () => (
 export const Goals = () => {
   const { t } = useLanguage();
   const [goals, setGoals] = useState([]);
-  const [newGoal, setNewGoal] = useState("");
+  const [draft, setDraft] = useState("");
+  const [filter, setFilter] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState("");
-  const [openStatusId, setOpenStatusId] = useState(null);
-  const [addColumn, setAddColumn] = useState(null);
-  const [columnDraft, setColumnDraft] = useState("");
+  const [draftCol, setDraftCol] = useState(null);
+  const [draftColText, setDraftColText] = useState("");
+
+  // Refs keep the blur-to-commit flow from firing twice or saving on cancel.
+  const skipBlur = useRef(false);
+  const cancelEdit = useRef(false);
+  const cancelMeta = useRef(false);
+
+  const columns = [
+    { id: "urgent", label: t("goals.urgent") },
+    { id: "progress", label: t("goals.inProgress") },
+    { id: "done", label: t("goals.done") }
+  ];
 
   useEffect(() => {
     loadGoals();
 
-    const handleRefresh = () => loadGoals();
-    const handleVisibility = () => { if (!document.hidden) loadGoals(); };
-    window.addEventListener("goals:updated", handleRefresh);
-    document.addEventListener("visibilitychange", handleVisibility);
+    const refresh = () => loadGoals();
+    const onVisible = () => { if (!document.hidden) loadGoals(); };
+    window.addEventListener("goals:updated", refresh);
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
-      window.removeEventListener("goals:updated", handleRefresh);
-      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("goals:updated", refresh);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
 
-  // Close the inline status picker when clicking anywhere outside a card.
-  useEffect(() => {
-    if (openStatusId === null) return;
-    const close = () => setOpenStatusId(null);
-    document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
-  }, [openStatusId]);
-
   const loadGoals = async () => {
     const data = await getGoals();
-    if (data) setGoals(data.filter(g => g));
+    if (data) setGoals(data.filter(Boolean));
   };
 
-  const handleCreateGoal = async () => {
-    if (!newGoal.trim()) return;
-    const data = await createGoal(newGoal, newGoal);
+  // "urgent" is also the catch-all so a goal with an empty/unknown status stays visible.
+  const bucketOf = (status) =>
+    status === "progress" ? "progress" : status === "done" ? "done" : "urgent";
+
+  const goalsFor = (colId) => goals.filter(g => bucketOf(g.status) === colId);
+
+  // ── create ────────────────────────────────────────────────────────────
+  const persistNew = async (text, status) => {
+    const data = await createGoal(text, text);
     if (!data?.goal) return;
-    const status = "progress";
-    await updateGoal(data.goal.id, { status });
-    setNewGoal("");
-    setGoals(prev => [{ ...data.goal, status }, ...prev]);
+    const res = await updateGoal(data.goal.id, { status });
+    const goal = res?.goal || { ...data.goal, status };
+    setGoals(prev => [...prev, goal]);
   };
 
-  // Quick-add directly inside a column, with that column's status preset.
-  const handleColumnCreate = async (status) => {
-    if (!columnDraft.trim()) { setAddColumn(null); return; }
-    const data = await createGoal(columnDraft, columnDraft);
-    if (!data?.goal) { setAddColumn(null); return; }
-    await updateGoal(data.goal.id, { status });
-    setGoals(prev => [{ ...data.goal, status }, ...prev]);
-    setColumnDraft("");
-    setAddColumn(null);
+  const handleAddDraft = async () => {
+    const text = draft.trim();
+    if (!text) return;
+    setDraft("");
+    await persistNew(text, "urgent");
   };
 
-  const startEditing = (goal) => {
+  const openMetaDraft = (colId) => { setDraftCol(colId); setDraftColText(""); };
+
+  const commitMetaDraft = async () => {
+    if (cancelMeta.current) {
+      cancelMeta.current = false;
+      setDraftCol(null);
+      setDraftColText("");
+      return;
+    }
+    const colId = draftCol;
+    const text = draftColText.trim();
+    setDraftCol(null);
+    setDraftColText("");
+    if (!colId || !text) return;
+    await persistNew(text, colId);
+  };
+
+  // ── edit text + status ────────────────────────────────────────────────
+  const startEdit = (goal) => {
+    if (editingId === goal.id) return;
     setEditingId(goal.id);
     setEditingText(goal.title);
   };
 
-  const saveEdit = async (id) => {
-    if (!editingText.trim()) { setEditingId(null); return; }
-    const data = await updateGoal(id, { title: editingText });
-    if (!data?.goal) return;
-    setGoals(goals.map(g => (g.id === id ? data.goal : g)));
+  const commitEditText = async () => {
+    if (skipBlur.current) { skipBlur.current = false; return; }
+    const id = editingId;
+    if (id == null) return;
     setEditingId(null);
-    setEditingText("");
+    if (cancelEdit.current) { cancelEdit.current = false; return; }
+    const text = editingText.trim();
+    if (!text) {
+      await deleteGoal(id);
+      setGoals(gs => gs.filter(g => g.id !== id));
+      return;
+    }
+    const data = await updateGoal(id, { title: text });
+    if (data?.goal) setGoals(gs => gs.map(g => (g.id === id ? data.goal : g)));
+  };
+
+  const applyStatus = async (status) => {
+    skipBlur.current = true;
+    const id = editingId;
+    const text = editingText.trim();
+    setEditingId(null);
+    if (id == null) return;
+    const payload = text ? { title: text, status } : { status };
+    const data = await updateGoal(id, payload);
+    if (data?.goal) setGoals(gs => gs.map(g => (g.id === id ? data.goal : g)));
   };
 
   const handleDelete = async (id) => {
+    if (editingId === id) { skipBlur.current = true; setEditingId(null); }
     await deleteGoal(id);
-    setGoals(goals.filter(g => g.id !== id));
+    setGoals(gs => gs.filter(g => g.id !== id));
   };
 
-  const changeStatus = async (id, status) => {
-    const data = await updateGoal(id, { status });
-    if (!data?.goal) return;
-    setGoals(goals.map(g => (g.id === id ? data.goal : g)));
-    setOpenStatusId(null);
-  };
-
-  const columns = [
-    { key: "urgent", label: t("goals.urgent") },
-    { key: "progress", label: t("goals.inProgress") },
-    { key: "done", label: t("goals.done") }
-  ];
-
-  // "progress" doubles as the catch-all bucket so legacy/empty statuses stay visible.
-  const isStatus = (goal, key) => {
-    if (key === "urgent") return goal.status === "urgent";
-    if (key === "done") return goal.status === "done";
-    return goal.status !== "urgent" && goal.status !== "done";
-  };
-
-  const goalsFor = (key) => goals.filter(g => isStatus(g, key));
+  const counts = columns.reduce((acc, c) => ({ ...acc, [c.id]: goalsFor(c.id).length }), {});
 
   return (
     <div className="goals-page">
+      <h1 className="goals-title">{t("goals.yourGoals")}</h1>
 
-      <header className="goals-topbar">
-        <h1 className="goals-title">{t("goals.yourGoals")}</h1>
-        <input
-          className="goal-input"
-          placeholder={t("goals.createPlaceholder")}
-          value={newGoal}
-          onChange={(e) => setNewGoal(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleCreateGoal()}
-        />
-        <button type="button" className="btn-add" onClick={handleCreateGoal}>
-          + {t("goals.add")}
-        </button>
-      </header>
-
-      <div className="goals-stats">
-        {columns.map(col => (
-          <span key={col.key} className={`stat-pill ${col.key}`}>
-            <i className="stat-dot" />
-            {col.label}
-            <b>{goalsFor(col.key).length}</b>
-          </span>
-        ))}
+      {/* Filter chips (also act as the stats summary) */}
+      <div className="goals-filters">
+        {columns.map(c => {
+          const active = filter === c.id;
+          return (
+            <button
+              key={c.id}
+              type="button"
+              className={`goal-chip ${c.id} ${active ? "active" : ""}`}
+              onClick={() => setFilter(active ? null : c.id)}
+            >
+              <span className="goal-chip-dot" />
+              {c.label}
+              <span className="goal-chip-count">{counts[c.id]}</span>
+            </button>
+          );
+        })}
+        {filter && (
+          <button type="button" className="goal-chip-clear" onClick={() => setFilter(null)}>
+            {t("goals.viewAll")}
+          </button>
+        )}
       </div>
 
-      <div className="goals-board">
+      {/* Add row */}
+      <div className="goals-add">
+        <input
+          className="goal-input"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") handleAddDraft(); }}
+          placeholder={t("goals.createPlaceholder")}
+        />
+        <button type="button" className="btn-add" onClick={handleAddDraft}>
+          + {t("goals.add")}
+        </button>
+      </div>
+
+      {/* Board */}
+      <div className="row g-4 align-items-start goals-board">
         {columns.map(col => {
-          const colGoals = goalsFor(col.key);
+          const colGoals = goalsFor(col.id);
+          const dimmed = filter && filter !== col.id;
           return (
-            <section key={col.key} className={`goals-col ${col.key}`}>
-              <div className="col-head">
-                <span className="col-title">{col.label}</span>
-                <span className="col-count">{colGoals.length}</span>
-              </div>
+            <div key={col.id} className="col-12 col-md-4">
+              <section className={`goals-col ${col.id} ${dimmed ? "dimmed" : ""}`}>
+                <div className="goal-col-head">
+                  <span className="goal-col-title">{col.label}</span>
+                  <span className="goal-col-count">{colGoals.length}</span>
+                </div>
 
-              <div className="col-body">
-                {colGoals.map(goal => (
-                  <article
-                    key={goal.id}
-                    className={`goal-card ${openStatusId === goal.id ? "open" : ""}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenStatusId(prev => (prev === goal.id ? null : goal.id));
-                    }}
-                  >
-                    {editingId === goal.id ? (
-                      <input
-                        className="goal-edit-input"
-                        value={editingText}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => setEditingText(e.target.value)}
-                        onBlur={() => saveEdit(goal.id)}
-                        onKeyDown={(e) => e.key === "Enter" && saveEdit(goal.id)}
-                        autoFocus
-                      />
-                    ) : (
-                      <h3
-                        className="goal-card-title"
-                        onDoubleClick={(e) => { e.stopPropagation(); startEditing(goal); }}
-                      >
-                        {goal.title}
-                      </h3>
-                    )}
+                {colGoals.map(goal => {
+                  const isEditing = editingId === goal.id;
+                  return (
+                    <article key={goal.id} className={`goal-card ${isEditing ? "editing" : ""}`}>
+                      {isEditing ? (
+                        <input
+                          className="goal-card-input"
+                          value={editingText}
+                          autoFocus
+                          onChange={(e) => setEditingText(e.target.value)}
+                          onBlur={commitEditText}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") e.currentTarget.blur();
+                            if (e.key === "Escape") { cancelEdit.current = true; e.currentTarget.blur(); }
+                          }}
+                          placeholder={t("goals.writeNewGoal")}
+                        />
+                      ) : (
+                        <div className="goal-card-text">{goal.title}</div>
+                      )}
 
-                    {openStatusId === goal.id && (
-                      <div className="goal-status-options" onClick={(e) => e.stopPropagation()}>
-                        {columns.map(opt => (
-                          <button
-                            type="button"
-                            key={opt.key}
-                            className={`status-btn ${opt.key} ${isStatus(goal, opt.key) ? "active" : ""}`}
-                            onClick={(e) => { e.stopPropagation(); changeStatus(goal.id, opt.key); }}
-                          >
-                            {opt.label}
-                          </button>
-                        ))}
+                      <div className="goal-card-actions">
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          title={t("goals.editStatus")}
+                          aria-label={t("goals.editStatus")}
+                          onClick={() => startEdit(goal)}
+                        >
+                          <PencilIcon />
+                        </button>
+                        <button
+                          type="button"
+                          className="icon-btn danger"
+                          title={t("common.delete")}
+                          aria-label={t("common.delete")}
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleDelete(goal.id)}
+                        >
+                          <TrashIcon />
+                        </button>
                       </div>
-                    )}
 
-                    <div className="goal-card-actions">
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        aria-label={t("goals.editStatus")}
-                        onClick={(e) => { e.stopPropagation(); startEditing(goal); }}
-                      >
-                        <PencilIcon />
-                      </button>
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        aria-label={t("common.delete")}
-                        onClick={(e) => { e.stopPropagation(); handleDelete(goal.id); }}
-                      >
-                        <TrashIcon />
-                      </button>
-                    </div>
+                      {isEditing && (
+                        <div className="status-popover">
+                          {columns.map(opt => (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              className={`status-opt ${opt.id} ${bucketOf(goal.status) === opt.id ? "active" : ""}`}
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => applyStatus(opt.id)}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+
+                {draftCol === col.id && (
+                  <article className="goal-card editing">
+                    <input
+                      className="goal-card-input"
+                      value={draftColText}
+                      autoFocus
+                      onChange={(e) => setDraftColText(e.target.value)}
+                      onBlur={commitMetaDraft}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") e.currentTarget.blur();
+                        if (e.key === "Escape") { cancelMeta.current = true; e.currentTarget.blur(); }
+                      }}
+                      placeholder={t("goals.writeNewGoal")}
+                    />
                   </article>
-                ))}
-
-                {addColumn === col.key ? (
-                  <input
-                    className="col-add-input"
-                    placeholder={t("goals.createPlaceholder")}
-                    value={columnDraft}
-                    autoFocus
-                    onChange={(e) => setColumnDraft(e.target.value)}
-                    onBlur={() => { setAddColumn(null); setColumnDraft(""); }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleColumnCreate(col.key);
-                      if (e.key === "Escape") { setAddColumn(null); setColumnDraft(""); }
-                    }}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    className="col-add-btn"
-                    onClick={() => { setAddColumn(col.key); setColumnDraft(""); }}
-                  >
-                    + {t("goals.add")}
-                  </button>
                 )}
-              </div>
-            </section>
+
+                <button type="button" className="col-add-btn" onClick={() => openMetaDraft(col.id)}>
+                  + {t("goals.add")}
+                </button>
+              </section>
+            </div>
           );
         })}
       </div>
